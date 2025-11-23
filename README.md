@@ -18,6 +18,7 @@ Bu kütüphane ile kolayca **private key → public key → Tron adresi** dönü
 - Public Key’den **Tron Adresi** hesaplama
 - Base58Check formatında okunabilir adres üretimi (bağımsız Base58 implementasyonu)
 - Adres byte uzunluğu kontrolü
+- Cüzdanın TRX kontrolü (MainNet,Nile,Shasta) Dahil
 
 ---
 
@@ -25,7 +26,7 @@ Bu kütüphane ile kolayca **private key → public key → Tron adresi** dönü
 - **TRX Transferi** - Tron ağında TRX gönderme/alma
 - **TRC20 Token Desteği** - USDT, BTT gibi token işlemleri
 - **Akıllı Kontrat Etkileşimi** - Tron smart contract'ları ile çalışma
-- **Bakiye Sorgulama** - Adres bakiyelerini öğrenme
+- **TRC20 Token Bakiye Sorgulama** - Adres bakiyelerini öğrenme
 - **İşlem Geçmişi** - Transfer geçmişini görüntüleme
 
 ---
@@ -67,7 +68,7 @@ int addrLength = AddressUtils.GetAddressByteLength(wallet.Address);
 Console.WriteLine($"Address byte uzunluğu = {addrLength}");
 
 ```
----
+
 #### Örnek Çıktı : 
 ```bash
 Private Key (hex): 03FFEB1D127C5BEF8377F32092F3AD4FEEC93D337553CF5DC8120EC9838147DC
@@ -95,6 +96,32 @@ Address byte uzunluğu = 25
 
 ```
 ---
+
+## TRX BAKİYE SORGULAMA:
+```bash
+using TronAksaSharp.Wallet;
+
+// TRX BAKİYE SORGULAMA :
+string walletAddress = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N"; // Örnek TRON adresi
+
+decimal trxBalance = await BalanceService.GetTRXBalanceAsync(walletAddress, TronNetwork.NileTestNet); // Nile TestNet
+Console.WriteLine($"TRX Balance (Nile): {trxBalance}");
+
+trxBalance = await BalanceService.GetTRXBalanceAsync(walletAddress, TronNetwork.ShastaTestNet); // Shasta TestNet
+Console.WriteLine($"TRX Balance (Shasta): {trxBalance}");
+
+trxBalance = await BalanceService.GetTRXBalanceAsync(walletAddress, TronNetwork.MainNet); // MainNet
+Console.WriteLine($"TRX Balance (MainNet): {trxBalance}");
+```
+
+### Örnek Çıktı : 
+```bash
+TRX Balance (Nile): 35452,278782
+TRX Balance (Shasta): 9957,8
+TRX Balance (MainNet): 0
+```
+---
+
 ## MIT License : 
 ```bash
 Copyright (c) 2025 Kubilay Efe Akdoğan
