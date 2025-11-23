@@ -10,13 +10,14 @@
 **TronAksaSharp**: C# ile yazılmış, Tron ağı için yerli ve açık kaynaklı bir cüzdan & adres üretme  kütüphanesidir.  
 Bu kütüphane ile kolayca **private key → public key → Tron adresi** dönüşümü yapabilirsiniz.
 
+---
 ## Özellikler
 
 - Rastgele **Private Key** üretimi
 - Private Key’den **Public Key** türetme
 - Public Key’den **Tron Adresi** hesaplama
-- Base58Check formatında okunabilir adres üretimi
-- Hafif, sade ve anlaşılır kod yapısı
+- Base58Check formatında okunabilir adres üretimi (bağımsız Base58 implementasyonu)
+- Adres byte uzunluğu kontrolü
 
 ---
 
@@ -32,42 +33,68 @@ Bu kütüphane ile kolayca **private key → public key → Tron adresi** dönü
 ## Kurulum : 
 
 1. Projenize `TronAksaSharp` kütüphanesini ekleyin.
+   NuGet : https://www.nuget.org/packages/TronAksaSharp
 ---
 2. Gerekli bağımlılıkları yükleyin:
 
    - [BouncyCastle](https://www.nuget.org/packages/BouncyCastle/)
-   - [SimpleBase](https://www.nuget.org/packages/SimpleBase/)
-   - [SHA3.Net](https://www.nuget.org/packages/SHA3.Net/)
 
    Bu paketleri NuGet Paket Yöneticisi ile yükleyebilirsiniz:
 
    ```bash
    Install-Package BouncyCastle
-   Install-Package SimpleBase
-   Install-Package SHA3.Net
 ---
+NOT: Base58 işlemleri artık kütüphane içinde, SimpleBase bağımlılığı kaldırıldı.
+
 #### Yeni Cüzdan Oluşturma : 
 ```bash
-using TronAksaSharp.TronCrypto;
 
-// Yeni bir cüzdan oluştur
-byte[] privateKey = TronKeyGenerator.GeneratePrivateKey();
-byte[] publicKey = TronKeyGenerator.PrivateKeyToPublicKey(privateKey);
-string address = TronAddressGenerator.PublicKeyToAddress(publicKey);
+using TronAksaSharp.Wallet;
+using TronAksaSharp.Wallet; // TronWallet ve AddressUtils
+using System;
 
-Console.WriteLine($"Private Key: {BitConverter.ToString(privateKey).Replace("-", "").ToLower()}");
-Console.WriteLine($"Public Key: {BitConverter.ToString(publicKey).Replace("-", "").ToLower()}");
-Console.WriteLine($"Address: {address}");
+var wallet = TronWallet.CreateTronWallet();
+
+// Byte dizilerini hex string olarak gösterme
+string ToHex(byte[] data) => BitConverter.ToString(data).Replace("-", "").ToLower();
+
+Console.WriteLine($"Private Key (hex): {ToHex(wallet.PrivateKey)}");
+Console.WriteLine($"Public Key (hex) : {ToHex(wallet.PublicKey)}");
+Console.WriteLine($"Address          : {wallet.Address}");
+
+// Adresin byte uzunluğunu kontrol etme
+int addrLength = AddressUtils.GetAddressByteLength(wallet.Address);
+Console.WriteLine($"Address byte uzunluğu = {addrLength}");
+
 ```
 ---
 #### Örnek Çıktı : 
 ```bash
-Private Key: 1187c6a8f9f8e6a5f4e3d2c1b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c3b2a1
-Public Key: 04a7b9c8d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4e3f2a1b0c9d8e7f6a5b4c3d2e1f0a9b8
-Address: TYqNYnTGsaa9CZaB9FAqRj5WeRxFzK2q6k
+Private Key (hex): 03FFEB1D127C5BEF8377F32092F3AD4FEEC93D337553CF5DC8120EC9838147DC
+Public Key (hex) : 046AF87108AD9870550EF651B18D24A551391D66E73BA44DCB45AE7232955FC19D6F6190B58BD3B5D1D96CD127D423B72D70900A972ACD48BD42C35C30098416E8
+Address          : TUqSfg8fT6t4R5zn2Lhe1RtQ6vHmJLeyJt
+Address byte uzunluğu = 25
 ```
 ---
+## Hex ve Adres Hesaplama Açıklaması :
+```bash
+1. Private Key → Public Key
+- secp256k1 eliptik eğri algoritması kullanılır.
+- Public key uncompressed formatta (65 byte) elde edilir.
 
+2. Public Key → Tron Adresi
+- Public key’in ilk byte’ı (0x04) çıkarılır.
+- Kalan 64 byte, Keccak-256 hash işleminden geçirilir.
+- Hash’in son 20 byte’ı alınır ve başına 0x41 eklenir (TRON adres prefix).
+- byte checksum hesaplanır (Double SHA-256).
+- Sonuç Base58Check formatına çevrilir → okunabilir Tron adresi elde edilir.
+
+3. Adres Byte Uzunluğu
+- Tron Base58Check adresi: 21 byte veri + 4 byte checksum = 25 byte uzunluğundadır.
+- AddressUtils.GetAddressByteLength metodu ile bu uzunluğu kolayca doğrulayabilirsiniz.
+
+```
+---
 ## MIT License : 
 ```bash
 Copyright (c) 2025 Kubilay Efe Akdoğan
@@ -89,4 +116,5 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
 ```
