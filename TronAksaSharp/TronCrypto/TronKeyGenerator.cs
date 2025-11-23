@@ -13,13 +13,9 @@ namespace TronAksaSharp.TronCrypto
 
             var gen = new ECKeyPairGenerator();
             var keyParams = new ECKeyGenerationParameters(domain, new Org.BouncyCastle.Security.SecureRandom());
-            gen.Init(keyParams);
-
+            gen.Init(new ECKeyGenerationParameters(domain, new Org.BouncyCastle.Security.SecureRandom()));
             var keyPair = gen.GenerateKeyPair();
-
-            var privateKey = ((ECPrivateKeyParameters)keyPair.Private).D.ToByteArrayUnsigned();
-
-            return privateKey;
+            return Fix32(((ECPrivateKeyParameters)keyPair.Private).D.ToByteArrayUnsigned());
         }
 
         public static byte[] PrivateKeyToPublicKey(byte[] privateKey)
@@ -30,6 +26,13 @@ namespace TronAksaSharp.TronCrypto
             var q = domain.G.Multiply(d).Normalize();
 
             return q.GetEncoded(false);
+        }
+        private static byte[] Fix32(byte[] key)
+        {
+            if (key.Length == 32) return key;
+            var fixedKey = new byte[32];
+            Buffer.BlockCopy(key, 0, fixedKey, 32 - key.Length, key.Length);
+            return fixedKey;
         }
     }
 }

@@ -4,12 +4,40 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <Title>Tron Aksa Sharp</Title>
+    <Version>1.0.0</Version>
+    <Authors>kubilay efe akdoğan</Authors>
+    <Company>Kubilay Efe Akdoğan</Company>
+    <Description>TronAksaSharp, Tron uyumlu cüzdanlar oluşturmak için hafif ve açık kaynaklı bir C# kütüphanesidir.
+Private key üretimi, public key türetme ve adres hesaplama destekler. Gelecekte transfer, bakiye sorgulama ve diğer cüzdan işlemleri eklenecektir.</Description>
+    <Copyright>copyright 2025</Copyright>
+    <PackageIcon>TronAksaSharp.png</PackageIcon>
+    <PackageReadmeFile>Readme.md</PackageReadmeFile>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Tron Blockchain Wallet Transfer</PackageTags>
+    <NeutralLanguage>tr-TR</NeutralLanguage>
+    <PackageLicenseFile>License.md</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="..\..\..\License.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\..\Readme.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\..\..\Downloads\TronAksaSharp.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
-    <PackageReference Include="SHA3.Net" Version="2.0.0" />
-    <PackageReference Include="SimpleBase" Version="5.6.0" />
   </ItemGroup>
 
 </Project>

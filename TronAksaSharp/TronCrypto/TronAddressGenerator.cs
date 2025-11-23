@@ -1,5 +1,5 @@
 ﻿using Org.BouncyCastle.Crypto.Digests;
-using SimpleBase;
+using TronAksaSharp.Utils;
 using System.Security.Cryptography;
 
 namespace TronAksaSharp.TronCrypto
@@ -8,22 +8,27 @@ namespace TronAksaSharp.TronCrypto
     {
         public static string PublicKeyToAddress(byte[] publicKey)
         {
-            byte[] pubKeyNoPrefix = publicKey.Skip(1).ToArray();
+            if(publicKey.Length !=65 || publicKey[0] !=0x004)
+            {
+                throw new ArgumentException("Uncompressed public key bekleniyor.");
+            }
+
+            byte[] pubKeyNoPrefix = publicKey[1..];
 
             var digest = new KeccakDigest(256);
             digest.BlockUpdate(pubKeyNoPrefix, 0, pubKeyNoPrefix.Length);
             byte[] hash = new byte[digest.GetDigestSize()];
             digest.DoFinal(hash, 0);
 
-            byte[] last20 = hash.Skip(12).ToArray(); 
+            byte[] last20 = hash[12..];
             byte[] tronaddressBytes = new byte[21];
             tronaddressBytes[0] = 0x41;
             Array.Copy(last20, 0, tronaddressBytes, 1, 20);
 
-            byte[] checksum = DoubleSha256(tronaddressBytes).Take(4).ToArray();
+            byte[] checksum = DoubleSha256(tronaddressBytes)[..4];
             byte[] finalWithChecksum = tronaddressBytes.Concat(checksum).ToArray();
 
-            return Base58.Bitcoin.Encode(finalWithChecksum);
+            return Base58.Encode(finalWithChecksum);
         }
 
         private static byte[] DoubleSha256(byte[] data)
