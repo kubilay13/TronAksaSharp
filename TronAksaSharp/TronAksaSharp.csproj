@@ -11,8 +11,6 @@
     <Description>TronAksaSharp, Tron uyumlu cüzdanlar oluşturmak için hafif ve açık kaynaklı bir C# kütüphanesidir.
 Private key üretimi, public key türetme ve adres hesaplama destekler. Gelecekte transfer, bakiye sorgulama ve diğer cüzdan işlemleri eklenecektir.</Description>
     <Copyright>copyright 2025</Copyright>
-    <PackageIcon>TronAksaSharp.png</PackageIcon>
-    <PackageReadmeFile>readme V_1.0.1.md</PackageReadmeFile>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Tron Blockchain Wallet Transfer</PackageTags>
     <NeutralLanguage>tr-TR</NeutralLanguage>
@@ -21,23 +19,15 @@ Private key üretimi, public key türetme ve adres hesaplama destekler. Gelecekt
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Include="">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-    <None Include="">
-      <Pack>True</Pack>
-      <PackagePath>\</PackagePath>
-    </None>
-  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
   </ItemGroup>
 
 </Project>
+
+
+
+
+
