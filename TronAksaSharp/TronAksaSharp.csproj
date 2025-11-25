@@ -16,21 +16,21 @@ Private key üretimi, public key türetme ve adres hesaplama destekler. Gelecekt
     <RepositoryType>git</RepositoryType>
     <PackageTags>Tron Blockchain Wallet Transfer</PackageTags>
     <NeutralLanguage>tr-TR</NeutralLanguage>
-    <PackageLicenseFile>License.md</PackageLicenseFile>
-    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\..\License.md">
+    <None Include="">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\..\..\readme V_1.0.1.md">
+    <None Include="">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="..\..\..\..\Downloads\TronAksaSharp.png">
+    <None Include="">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
