@@ -34,5 +34,12 @@ Console.WriteLine($"TRX Balance (Shasta): {trxBalance}");
 trxBalance = await BalanceService.GetTRXBalanceAsync(walletAddress, TronNetwork.MainNet); // MainNet
 Console.WriteLine($"TRX Balance (MainNet): {trxBalance}");
 
+var staked = await BalanceService.GetBandwidthStakeAsync(walletAddress, TronNetwork.NileTestNet);
+Console.WriteLine("Stake Edilmiş Bandwith TRX: " + staked);
+
+staked = await BalanceService.GetEnergyStakeAsync(walletAddress, TronNetwork.NileTestNet);
+Console.WriteLine("Stake Edilmiş Energy TRX: " + staked);
+
+
 
 

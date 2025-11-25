@@ -7,9 +7,12 @@ namespace TronAksaSharp.Wallet
     {
         public static WalletModel CreateTronWallet()
         {
-            var privateKey = TronKeyGenerator.GeneratePrivateKey();
-            var publicKey = TronKeyGenerator.PrivateKeyToPublicKey(privateKey);
-            var address = TronAddressGenerator.PublicKeyToAddress(publicKey);
+            /// <summary>
+            /// Tron cüzdanı oluşturur.
+            /// </summary>
+            var privateKey = TronKeyGenerator.GeneratePrivateKey(); // Yeni bir özel anahtar oluşturur
+            var publicKey = TronKeyGenerator.PrivateKeyToPublicKey(privateKey); // Özel anahtardan genel anahtar türetir
+            var address = TronAddressGenerator.PublicKeyToAddress(publicKey); // Genel anahtardan Tron adresi oluşturur
 
             return new WalletModel
             {

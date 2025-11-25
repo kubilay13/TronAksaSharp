@@ -6,6 +6,9 @@ namespace TronAksaSharp.TronCrypto
 {
     public class TronAddressGenerator
     {
+        /// <summary>
+        /// Tron adresini verilen açık anahtardan oluşturur.
+        /// </summary>
         public static string PublicKeyToAddress(byte[] publicKey)
         {
             if(publicKey.Length !=65 || publicKey[0] !=0x004)
