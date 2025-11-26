@@ -97,7 +97,7 @@ Address byte uzunluğu = 25
 ```
 ---
 
-## TRX BAKİYE SORGULAMA:
+## TRX BAKİYE-STAKE(ENERGY,BANDWİTH) SORGULAMA :
 ```bash
 using TronAksaSharp.Wallet;
 
@@ -112,6 +112,12 @@ Console.WriteLine($"TRX Balance (Shasta): {trxBalance}");
 
 trxBalance = await BalanceService.GetTRXBalanceAsync(walletAddress, TronNetwork.MainNet); // MainNet
 Console.WriteLine($"TRX Balance (MainNet): {trxBalance}");
+
+var staked = await BalanceService.GetBandwidthStakeAsync(walletAddress, TronNetwork.NileTestNet); // Bandwith TRX Bakiye Sorgulama
+Console.WriteLine("Stake Edilmiş Bandwith TRX: " + staked);
+
+staked = await BalanceService.GetEnergyStakeAsync(walletAddress, TronNetwork.NileTestNet); // Energy Trx Bakiye Sorgulama
+Console.WriteLine("Stake Edilmiş Energy TRX: " + staked);
 ```
 
 ### Örnek Çıktı : 
