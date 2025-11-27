@@ -1,5 +1,8 @@
-﻿using System.Text.Json;
+﻿using System.Numerics;
+using System.Text;
+using System.Text.Json;
 using TronAksaSharp.Enums;
+using TronAksaSharp.Utils;
 
 namespace TronAksaSharp.Wallet
 {
@@ -28,6 +31,53 @@ namespace TronAksaSharp.Wallet
            return balance / 1_000_000; // TRX birimi 1 TRX = 1,000,000 sunucudur.
         }
 
+        public static async Task<decimal> GetTRC20BalanceAsync(
+      string walletAddress,
+      string contractAddress,
+      int tokenDecimals,
+      TronNetwork tronNetwork)
+        {
+            if (string.IsNullOrWhiteSpace(walletAddress) || string.IsNullOrWhiteSpace(contractAddress))
+                throw new ArgumentException("Adresler boş olamaz");
+
+            string baseUrl = TronEndpoints.GetBaseUrl(tronNetwork);
+
+            using var client = new HttpClient();
+
+            // balanceOf(address) selector
+            string methodSelector = "70a08231";
+
+            // Hex address for parameter (32 byte)
+            string hexParameterAddress = TronAddressUtils.ToHex32Parameter(walletAddress);
+
+            string input = methodSelector + hexParameterAddress;
+
+            var payload = new
+            {
+                contract_address = TronAddressUtils.ToHex21(contractAddress), // contract address hex formatında
+                function_selector = "balanceOf(address)",
+                parameter = input,
+                owner_address = TronAddressUtils.ToHex21(walletAddress) // owner address hex formatında
+            };
+
+            var content = new StringContent(
+                JsonSerializer.Serialize(payload),
+                Encoding.UTF8,
+                "application/json");
+
+            var response = await client.PostAsync($"{baseUrl}/wallet/triggersmartcontract", content);
+            var json = await response.Content.ReadAsStringAsync();
+
+            using var doc = JsonDocument.Parse(json);
+
+            if (!doc.RootElement.TryGetProperty("constant_result", out var result))
+                return 0;
+
+            string hexValue = result[0].GetString();
+            var bigInt = BigInteger.Parse("0" + hexValue, System.Globalization.NumberStyles.HexNumber);
+
+            return (decimal)bigInt / (decimal)Math.Pow(10, tokenDecimals);
+        }
         /// <summary>
         /// Bandwidth için stake edilmiş TRX miktarını döner
         /// </summary>
@@ -113,10 +163,8 @@ namespace TronAksaSharp.Wallet
                     }
                 }
             }
-
             return energyStake / 1_000_000m;
         }
-
     }
 }
 

@@ -1,4 +1,5 @@
-﻿using TronAksaSharp.Enums;
+﻿using System;
+using TronAksaSharp.Enums;
 using TronAksaSharp.Utils;
 using TronAksaSharp.Wallet;
 
@@ -34,12 +35,24 @@ Console.WriteLine($"TRX Balance (Shasta): {trxBalance}");
 trxBalance = await BalanceService.GetTRXBalanceAsync(walletAddress, TronNetwork.MainNet); // MainNet
 Console.WriteLine($"TRX Balance (MainNet): {trxBalance}");
 
+//-----------------------------------------------------------------------------
+
+
+// TRON STAKE BAKİYE SORGULAMA :
 var staked = await BalanceService.GetBandwidthStakeAsync(walletAddress, TronNetwork.NileTestNet);
 Console.WriteLine("Stake Edilmiş Bandwith TRX: " + staked);
 
 staked = await BalanceService.GetEnergyStakeAsync(walletAddress, TronNetwork.NileTestNet);
 Console.WriteLine("Stake Edilmiş Energy TRX: " + staked);
 
+
+//-----------------------------------------------------------------------------
+
+// TRC20 TOKEN BAKİYE SORGULAMA :
+string trc20Contract = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf"; // USDT TRC20 Contract Address
+int decimals = 6; // USDT TRC20 token ondalık basamak sayısı
+decimal tokenBalance = await BalanceService.GetTRC20BalanceAsync(walletAddress, trc20Contract, decimals, TronNetwork.NileTestNet); // Nile TestNet
+Console.WriteLine($"TRC20 Token Balance: {tokenBalance}");
 
 
 
