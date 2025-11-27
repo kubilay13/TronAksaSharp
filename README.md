@@ -18,7 +18,8 @@ Bu kütüphane ile kolayca **private key → public key → Tron adresi** dönü
 - Public Key’den **Tron Adresi** hesaplama
 - Base58Check formatında okunabilir adres üretimi (bağımsız Base58 implementasyonu)
 - Adres byte uzunluğu kontrolü
-- Cüzdanın TRX kontrolü (MainNet,Nile,Shasta) Dahil
+- Cüzdanın TRX ve TRC-20 token kontrolü (MainNet,Nile,Shasta) Dahil
+- Cüzdanın stake edilen varlıkların kontrolu (Energy,Bandwidth)
 
 ---
 
@@ -26,7 +27,6 @@ Bu kütüphane ile kolayca **private key → public key → Tron adresi** dönü
 - **TRX Transferi** - Tron ağında TRX gönderme/alma
 - **TRC20 Token Desteği** - USDT, BTT gibi token işlemleri
 - **Akıllı Kontrat Etkileşimi** - Tron smart contract'ları ile çalışma
-- **TRC20 Token Bakiye Sorgulama** - Adres bakiyelerini öğrenme
 - **İşlem Geçmişi** - Transfer geçmişini görüntüleme
 
 ---
@@ -113,18 +113,29 @@ Console.WriteLine($"TRX Balance (Shasta): {trxBalance}");
 trxBalance = await BalanceService.GetTRXBalanceAsync(walletAddress, TronNetwork.MainNet); // MainNet
 Console.WriteLine($"TRX Balance (MainNet): {trxBalance}");
 
+// TRON STAKE BAKİYE SORGULAMA :
 var staked = await BalanceService.GetBandwidthStakeAsync(walletAddress, TronNetwork.NileTestNet); // Bandwith TRX Bakiye Sorgulama
 Console.WriteLine("Stake Edilmiş Bandwith TRX: " + staked);
 
 staked = await BalanceService.GetEnergyStakeAsync(walletAddress, TronNetwork.NileTestNet); // Energy Trx Bakiye Sorgulama
 Console.WriteLine("Stake Edilmiş Energy TRX: " + staked);
+
+// TRC20 TOKEN BAKİYE SORGULAMA :
+string trc20Contract = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf"; // USDT TRC20 Contract Address
+int decimals = 6; // USDT TRC20 token ondalık basamak sayısı
+decimal tokenBalance = await BalanceService.GetTRC20BalanceAsync(walletAddress, trc20Contract, decimals, TronNetwork.NileTestNet); // Nile TestNet
+Console.WriteLine($"TRC20 Token Balance: {tokenBalance}");
+
 ```
 
 ### Örnek Çıktı : 
 ```bash
-TRX Balance (Nile): 35452,278782
+TRX Balance (Nile): 45575,325323
 TRX Balance (Shasta): 9957,8
 TRX Balance (MainNet): 0
+Stake Edilmiş Bandwith TRX: 24938
+Stake Edilmiş Energy TRX: 526780
+TRC20 Token Balance: 110430
 ```
 ---
 
