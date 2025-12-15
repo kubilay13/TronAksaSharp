@@ -1,0 +1,72 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Text.Json;
+using System.Threading.Tasks;
+using TronAksaSharp.Enums;
+using TronAksaSharp.Utils;
+
+namespace TronAksaSharp.Wallet
+{
+    public class TronTransferService
+    {
+        public static async Task<JsonDocument> CreateTRXTransactionAsync(
+            string fromAddress,
+            string toAddress,
+            decimal amountTrx,
+            TronNetwork network)
+        {
+            string baseUrl = TronEndpoints.GetBaseUrl(network);
+
+            long amountSun = (long)(amountTrx * 1_000_000m);
+
+            var payload = new
+            {
+                owner_address = TronAddressUtils.ToHex21(fromAddress),
+                to_address = TronAddressUtils.ToHex21(toAddress),
+                amount = amountSun
+            };
+
+            using var client = new HttpClient();
+            var content = new StringContent(
+                JsonSerializer.Serialize(payload),
+                Encoding.UTF8,
+                "application/json");
+
+            var response = await client.PostAsync(
+                    $"{baseUrl}/wallet/createtransaction",
+                    content);
+
+            var json = await response.Content.ReadAsStringAsync();
+            return JsonDocument.Parse(json);
+        }
+
+        // 👇 BURASI
+        public static async Task<bool> BroadcastAsync(
+            JsonDocument tx,
+            string signatureHex,
+            TronNetwork network)
+        {
+            string baseUrl = TronEndpoints.GetBaseUrl(network);
+
+            var payload = JsonSerializer.Deserialize<Dictionary<string, object>>(
+                tx.RootElement.GetRawText());
+
+            payload["signature"] = new[] { signatureHex };
+
+            using var client = new HttpClient();
+            var content = new StringContent(
+                JsonSerializer.Serialize(payload),
+                Encoding.UTF8,
+                "application/json");
+
+            var response = await client.PostAsync(
+                $"{baseUrl}/wallet/broadcasttransaction",
+                content);
+
+            var json = await response.Content.ReadAsStringAsync();
+            return json.Contains("\"result\":true");
+        }
+    }
+}
