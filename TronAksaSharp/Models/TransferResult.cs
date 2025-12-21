@@ -1,6 +1,6 @@
 ﻿namespace TronAksaSharp.Models
 {
-    public class TronTransferResult
+    public class TransferResult
     {
         public bool Success { get; set; }
         public string TxId { get; set; }

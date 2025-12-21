@@ -1,6 +1,6 @@
 ﻿using TronAksaSharp.Enums;
 
-namespace TronAksaSharp.Wallet
+namespace TronAksaSharp.Networks
 {
     public class TronEndpoints
     {

@@ -1,9 +1,10 @@
 ﻿using System.Text;
 using System.Text.Json;
+using TronAksaSharp.Address;
 using TronAksaSharp.Enums;
-using TronAksaSharp.Utils;
+using TronAksaSharp.Networks;
 
-namespace TronAksaSharp.Wallet
+namespace TronAksaSharp.Wallet.Services
 {
     public class TronTransferService
     {
@@ -19,8 +20,8 @@ namespace TronAksaSharp.Wallet
 
             var payload = new
             {
-                owner_address = TronAddressUtils.ToHex21(fromAddress),
-                to_address = TronAddressUtils.ToHex21(toAddress),
+                owner_address = AddressConverter.ToHex21(fromAddress),
+                to_address = AddressConverter.ToHex21(toAddress),
                 amount = amountSun
             };
 

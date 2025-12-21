@@ -1,10 +1,10 @@
 ﻿using Org.BouncyCastle.Crypto.Digests;
-using TronAksaSharp.Utils;
 using System.Security.Cryptography;
+using TronAksaSharp.Endcoding;
 
 namespace TronAksaSharp.TronCrypto
 {
-    public class TronAddressGenerator
+    public class AddressGenerator
     {
         /// <summary>
         /// Tron adresini verilen açık anahtardan oluşturur.

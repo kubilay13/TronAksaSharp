@@ -4,7 +4,7 @@ using Org.BouncyCastle.Crypto.Parameters;
 
 namespace TronAksaSharp.TronCrypto
 {
-    public class TronKeyGenerator
+    public class KeyGenerator
     {
         public static byte[] GeneratePrivateKey()
         {

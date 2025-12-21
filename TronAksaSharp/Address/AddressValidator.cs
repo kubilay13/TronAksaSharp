@@ -1,8 +1,8 @@
-﻿using TronAksaSharp.Utils;
+﻿using TronAksaSharp.Endcoding;
 
-namespace TronAksaSharp.Wallet
+namespace TronAksaSharp.Address
 {
-    public class WalletAddressUtils
+    public class AddressValidator
     {
         /// <summary>
         /// TRON cüzdan adresinin uzunluğunu byte cinsinden döner.

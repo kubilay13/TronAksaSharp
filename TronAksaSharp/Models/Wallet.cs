@@ -1,6 +1,6 @@
 ﻿namespace TronAksaSharp.Models
 {
-    public class WalletModel
+    public class Wallet
     {
         public byte[] PrivateKey { get; set; }
         public byte[] PublicKey { get; set; }

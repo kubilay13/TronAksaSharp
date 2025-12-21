@@ -1,6 +1,8 @@
-﻿namespace TronAksaSharp.Utils
+﻿using TronAksaSharp.Endcoding;
+
+namespace TronAksaSharp.Address
 {
-    public class TronAddressUtils
+    public class AddressConverter
     {
         /// <summary>
         /// Base58Check adresi 21 byte HEX formatına çevirir (owner_address için)

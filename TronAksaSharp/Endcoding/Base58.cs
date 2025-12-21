@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using System.Text;
 
-namespace TronAksaSharp.Utils
+namespace TronAksaSharp.Endcoding
 {
     public static class Base58
     {

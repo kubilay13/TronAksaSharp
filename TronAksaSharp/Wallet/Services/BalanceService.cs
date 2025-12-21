@@ -1,10 +1,11 @@
 ﻿using System.Numerics;
 using System.Text;
 using System.Text.Json;
+using TronAksaSharp.Address;
 using TronAksaSharp.Enums;
-using TronAksaSharp.Utils;
+using TronAksaSharp.Networks;
 
-namespace TronAksaSharp.Wallet
+namespace TronAksaSharp.Wallet.Services
 {
     public class BalanceService
     {
@@ -22,7 +23,7 @@ namespace TronAksaSharp.Wallet
            using var client = new HttpClient();
            var json = await client.GetStringAsync($"{baseUrl}/v1/accounts/{address}");
 
-           var document = System.Text.Json.JsonDocument.Parse(json);
+           var document = JsonDocument.Parse(json);
            if (!document.RootElement.TryGetProperty("data", out var data)  || data.GetArrayLength() == 0)
            { 
               return 0;
@@ -48,16 +49,16 @@ namespace TronAksaSharp.Wallet
             string methodSelector = "70a08231";
 
             // Hex address for parameter (32 byte)
-            string hexParameterAddress = TronAddressUtils.ToHex32Parameter(walletAddress);
+            string hexParameterAddress = AddressConverter.ToHex32Parameter(walletAddress);
 
             string input = methodSelector + hexParameterAddress;
 
             var payload = new
             {
-                contract_address = TronAddressUtils.ToHex21(contractAddress), // contract address hex formatında
+                contract_address = AddressConverter.ToHex21(contractAddress), // contract address hex formatında
                 function_selector = "balanceOf(address)",
                 parameter = input,
-                owner_address = TronAddressUtils.ToHex21(walletAddress) // owner address hex formatında
+                owner_address = AddressConverter.ToHex21(walletAddress) // owner address hex formatında
             };
 
             var content = new StringContent(

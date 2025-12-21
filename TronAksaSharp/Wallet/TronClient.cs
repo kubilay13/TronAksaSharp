@@ -1,5 +1,6 @@
 ﻿using TronAksaSharp.Enums;
 using TronAksaSharp.TronCrypto;
+using TronAksaSharp.Wallet.Services;
 
 namespace TronAksaSharp.Wallet
 {
