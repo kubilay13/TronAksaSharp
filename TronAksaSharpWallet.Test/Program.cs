@@ -1,6 +1,4 @@
-﻿using System;
-using TronAksaSharp.Enums;
-using TronAksaSharp.TronCrypto;
+﻿using TronAksaSharp.Enums;
 using TronAksaSharp.Utils;
 using TronAksaSharp.Wallet;
 
@@ -56,37 +54,23 @@ decimal tokenBalance = await BalanceService.GetTRC20BalanceAsync(walletAddress, 
 Console.WriteLine($"TRC20 Token Balance: {tokenBalance}");
 
 //-----------------------------------------------------------------------------
-// TRX TRANSFER TESTİ :
+// TRX TRANSFER TESTİ (DÜZENLENMİŞ)
 
-string senderAddress = "SENDER ADDRESS";
-string senderPrivateKey = "SENDER PRİVATE KEY";
+string senderAddress = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N";
+string senderPrivateKey = "PrivateKey"; // Gönderen cüzdanın özel anahtarı 
+string receiverAddress = "TMYMQWbWrKnK4QLeLD7QWhcE38t2vH3wto";
 
-byte[] privateKeyBytes = Convert.FromHexString(senderPrivateKey);
+decimal sendAmount = 999m; // 999 TRX
 
-string receiverAddress = "RECEİVER ADDRESS";
-decimal sendAmount = 1m; // Gönderilecek TRX miktarı ÖR 1 TRX
-
-var tx = await TronTransferService.CreateTRXTransactionAsync(
+bool transferResult = await TronClient.SendTRXAsync(
     senderAddress,
+    senderPrivateKey,
     receiverAddress,
     sendAmount,
-    TronNetwork.NileTestNet // Nile TestNet
-);
-
-string rawHex = tx.RootElement
-    .GetProperty("raw_data_hex")
-    .GetString();
-
-string signature = TronTransactionSigner.Sign(rawHex, privateKeyBytes);
-
-bool transferResult = await TronTransferService.BroadcastAsync(
-    tx,
-    signature,
     TronNetwork.NileTestNet
 );
 
 Console.WriteLine("TRX Transfer Sonucu : " + transferResult);
-
 
 
 
