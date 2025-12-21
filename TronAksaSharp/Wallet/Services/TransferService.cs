@@ -16,7 +16,7 @@ namespace TronAksaSharp.Wallet.Services
         {
             string baseUrl = TronEndpoints.GetBaseUrl(network);
 
-            long amountSun = (long)(amountTrx * 1_000_000m);
+            long amountSun = decimal.ToInt64(decimal.Round(amountTrx * 1_000_000m, 0, MidpointRounding.AwayFromZero));
 
             var payload = new
             {
