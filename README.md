@@ -141,7 +141,7 @@ TRC20 Token Balance: 110430
 
 ## MIT License : 
 ```bash
-Copyright (c) 2025 Kubilay Efe Akdoğan
+Copyright (c) 2025 Kubilay13
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
