@@ -11,23 +11,22 @@
 Bu kütüphane ile kolayca **private key → public key → Tron adresi** dönüşümü yapabilirsiniz.
 
 ---
-## Özellikler
+## Özellikler:
 
-- Rastgele **Private Key** üretimi
-- Private Key’den **Public Key** türetme
-- Public Key’den **Tron Adresi** hesaplama
+- Public Key’den **Tron Adresi** Oluşturma
 - Base58Check formatında okunabilir adres üretimi (bağımsız Base58 implementasyonu)
 - Adres byte uzunluğu kontrolü
 - Cüzdanın TRX ve TRC-20 token kontrolü (MainNet,Nile,Shasta) Dahil
+- TRX ve TRC20 Transferi (MainNet,Nile,Shasta) Dahil
 - Cüzdanın stake edilen varlıkların kontrolu (Energy,Bandwidth)
 
 ---
 
 ## Yakında Gelecek Özellikler :
-- **TRX Transferi** - Tron ağında TRX gönderme/alma
-- **TRC20 Token Desteği** - USDT, BTT gibi token işlemleri
 - **Akıllı Kontrat Etkileşimi** - Tron smart contract'ları ile çalışma
-- **İşlem Geçmişi** - Transfer geçmişini görüntüleme
+- İşlemlerin Detaylarını görme
+- Cüzdan Dinleme
+  
 
 ---
   
@@ -50,22 +49,12 @@ NOT: Base58 işlemleri artık kütüphane içinde, SimpleBase bağımlılığı 
 #### Yeni Cüzdan Oluşturma : 
 ```bash
 
-using TronAksaSharp.Wallet;
-using TronAksaSharp.Wallet; // TronWallet ve AddressUtils
-using System;
+string ToHex(byte[] data) => BitConverter.ToString(data).Replace("-", "");
+var createWallet = TronClient.CreateTronWallet();
 
-var wallet = TronWallet.CreateTronWallet();
-
-// Byte dizilerini hex string olarak gösterme
-string ToHex(byte[] data) => BitConverter.ToString(data).Replace("-", "").ToLower();
-
-Console.WriteLine($"Private Key (hex): {ToHex(wallet.PrivateKey)}");
-Console.WriteLine($"Public Key (hex) : {ToHex(wallet.PublicKey)}");
-Console.WriteLine($"Address          : {wallet.Address}");
-
-// Adresin byte uzunluğunu kontrol etme
-int addrLength = AddressUtils.GetAddressByteLength(wallet.Address);
-Console.WriteLine($"Address byte uzunluğu = {addrLength}");
+Console.WriteLine($"Cüzdan Adresi :\n {createWallet.Address}");
+Console.WriteLine($"Private Key :\n {ToHex(createWallet.PrivateKey)}");
+Console.WriteLine($"Public Key  :\n {ToHex(createWallet.PublicKey)}");
 
 ```
 
@@ -74,60 +63,29 @@ Console.WriteLine($"Address byte uzunluğu = {addrLength}");
 Private Key (hex): 03FFEB1D127C5BEF8377F32092F3AD4FEEC93D337553CF5DC8120EC9838147DC
 Public Key (hex) : 046AF87108AD9870550EF651B18D24A551391D66E73BA44DCB45AE7232955FC19D6F6190B58BD3B5D1D96CD127D423B72D70900A972ACD48BD42C35C30098416E8
 Address          : TUqSfg8fT6t4R5zn2Lhe1RtQ6vHmJLeyJt
-Address byte uzunluğu = 25
 ```
 ---
-## Hex ve Adres Hesaplama Açıklaması :
+## Adres Uzunluk Hesaplama :
 ```bash
-1. Private Key → Public Key
-- secp256k1 eliptik eğri algoritması kullanılır.
-- Public key uncompressed formatta (65 byte) elde edilir.
 
-2. Public Key → Tron Adresi
-- Public key’in ilk byte’ı (0x04) çıkarılır.
-- Kalan 64 byte, Keccak-256 hash işleminden geçirilir.
-- Hash’in son 20 byte’ı alınır ve başına 0x41 eklenir (TRON adres prefix).
-- byte checksum hesaplanır (Double SHA-256).
-- Sonuç Base58Check formatına çevrilir → okunabilir Tron adresi elde edilir.
-
-3. Adres Byte Uzunluğu
-- Tron Base58Check adresi: 21 byte veri + 4 byte checksum = 25 byte uzunluğundadır.
-- AddressUtils.GetAddressByteLength metodu ile bu uzunluğu kolayca doğrulayabilirsiniz.
+byte[] addrBytes = Base58.Decode($"{createWallet.Address}");
+Console.WriteLine("Adres byte uzunluğu = " + addrBytes.Length);
 
 ```
 ---
 
 ## TRX BAKİYE-STAKE(ENERGY,BANDWİTH) SORGULAMA :
 ```bash
-using TronAksaSharp.Wallet;
 
-// TRX BAKİYE SORGULAMA :
 string walletAddress = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N"; // Örnek TRON adresi
 
-decimal trxBalance = await BalanceService.GetTRXBalanceAsync(walletAddress, TronNetwork.NileTestNet); // Nile TestNet
-Console.WriteLine($"TRX Balance (Nile): {trxBalance}");
+var balances = await TronClient.GetBalancesAsync(walletAddress, TronNetwork.NileTestNet);
 
-trxBalance = await BalanceService.GetTRXBalanceAsync(walletAddress, TronNetwork.ShastaTestNet); // Shasta TestNet
-Console.WriteLine($"TRX Balance (Shasta): {trxBalance}");
-
-trxBalance = await BalanceService.GetTRXBalanceAsync(walletAddress, TronNetwork.MainNet); // MainNet
-Console.WriteLine($"TRX Balance (MainNet): {trxBalance}");
-
-// TRON STAKE BAKİYE SORGULAMA :
-var staked = await BalanceService.GetBandwidthStakeAsync(walletAddress, TronNetwork.NileTestNet); // Bandwith TRX Bakiye Sorgulama
-Console.WriteLine("Stake Edilmiş Bandwith TRX: " + staked);
-
-staked = await BalanceService.GetEnergyStakeAsync(walletAddress, TronNetwork.NileTestNet); // Energy Trx Bakiye Sorgulama
-Console.WriteLine("Stake Edilmiş Energy TRX: " + staked);
-
-// TRC20 TOKEN BAKİYE SORGULAMA :
-string trc20Contract = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf"; // USDT TRC20 Contract Address
-int decimals = 6; // USDT TRC20 token ondalık basamak sayısı
-decimal tokenBalance = await BalanceService.GetTRC20BalanceAsync(walletAddress, trc20Contract, decimals, TronNetwork.NileTestNet); // Nile TestNet
-Console.WriteLine($"TRC20 Token Balance: {tokenBalance}");
+Console.WriteLine($"TRX       : {balances.TrxBalance}");
+Console.WriteLine($"Bandwidth : {balances.BandwidthStake}");
+Console.WriteLine($"Energy    : {balances.EnergyStake}");
 
 ```
-
 ### Örnek Çıktı : 
 ```bash
 TRX Balance (Nile): 45575,325323
@@ -135,8 +93,53 @@ TRX Balance (Shasta): 9957,8
 TRX Balance (MainNet): 0
 Stake Edilmiş Bandwith TRX: 24938
 Stake Edilmiş Energy TRX: 526780
+```
+## TRC20 TOKEN BAKİYE SORGULAMA :
+```bash
+string trc20Contract = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf"; // USDT TRC20 Contract Address
+int decimals = 6; // USDT TRC20 token ondalık basamak sayısı
+decimal tokenBalance = await BalanceService.GetTRC20BalanceAsync(walletAddress, trc20Contract, decimals, TronNetwork.NileTestNet); // Nile TestNet
+Console.WriteLine($"TRC20 Token Balance: {tokenBalance}");
+
+```
+### Örnek Çıktı : 
+```bash
 TRC20 Token Balance: 110430
 ```
+## TRX TRANSFER :
+```bash
+
+var trx = await TronClient.SendTRXAsync(
+    senderAddress,
+    senderPrivateKey,
+    receiverAddress,
+    1,
+    TronNetwork.NileTestNet
+);
+
+Console.WriteLine(trx.Success ? "TRX Transferi Başarılı" : $"TRX HATA → {trx.Error}");
+
+```
+## TRC20 TRANSFER :
+```bash
+
+string usdtContract = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf"; // USDT (Nile)
+int decimals = 6; // USDT için ondalık basamak sayısı
+
+var trc20 = await TronClient.SendTRC20Async(
+    senderAddress,
+    senderPrivateKey,
+    receiverAddress,
+    usdtContract,
+    1,
+    6,
+    TronNetwork.NileTestNet
+);
+
+Console.WriteLine(trc20.Success ? "TRC20 Transferi Başarılı" : $"TRC20 HATA → {trc20.Error}");
+
+```
+
 ---
 
 ## MIT License : 
