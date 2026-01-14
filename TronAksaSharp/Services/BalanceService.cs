@@ -5,7 +5,7 @@ using TronAksaSharp.Address;
 using TronAksaSharp.Enums;
 using TronAksaSharp.Networks;
 
-namespace TronAksaSharp.Wallet.Services
+namespace TronAksaSharp.Services
 {
     public class BalanceService
     {
