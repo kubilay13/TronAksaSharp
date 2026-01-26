@@ -9,9 +9,7 @@ namespace TronAksaSharp.Services
 {
     public class BalanceService
     {
-        /// <summary>
-        /// TRX BAKİYESİNİ SORGULAR
-        /// </summary>
+        // TRX BAKİYESİNİ SORGULAR
         public static async Task<decimal> GetTRXBalanceAsync(string address ,TronNetwork tronNetwork)
         { 
            if(string.IsNullOrWhiteSpace(address))
@@ -31,42 +29,27 @@ namespace TronAksaSharp.Services
            var balance = data[0].GetProperty("balance").GetDecimal();
            return balance / 1_000_000; // TRX birimi 1 TRX = 1,000,000 sunucudur.
         }
-
-        public static async Task<decimal> GetTRC20BalanceAsync(
-      string walletAddress,
-      string contractAddress,
-      int tokenDecimals,
-      TronNetwork tronNetwork)
+        // TRC20 BAKİYESİNİ SORGULAR
+        public static async Task<decimal> GetTRC20BalanceAsync(string walletAddress, string contractAddress, int tokenDecimals, TronNetwork tronNetwork)
         {
-            if (string.IsNullOrWhiteSpace(walletAddress) || string.IsNullOrWhiteSpace(contractAddress))
-                throw new ArgumentException("Adresler boş olamaz");
-
             string baseUrl = TronEndpoints.GetBaseUrl(tronNetwork);
 
             using var client = new HttpClient();
 
-            // balanceOf(address) selector
-            string methodSelector = "70a08231";
-
-            // Hex address for parameter (32 byte)
             string hexParameterAddress = AddressConverter.ToHex32Parameter(walletAddress);
-
-            string input = methodSelector + hexParameterAddress;
 
             var payload = new
             {
-                contract_address = AddressConverter.ToHex21(contractAddress), // contract address hex formatında
+                contract_address = AddressConverter.ToHex21(contractAddress),
                 function_selector = "balanceOf(address)",
-                parameter = input,
-                owner_address = AddressConverter.ToHex21(walletAddress) // owner address hex formatında
+                parameter = hexParameterAddress,
+                owner_address = AddressConverter.ToHex21(walletAddress)
             };
 
-            var content = new StringContent(
-                JsonSerializer.Serialize(payload),
-                Encoding.UTF8,
-                "application/json");
+            var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
 
             var response = await client.PostAsync($"{baseUrl}/wallet/triggersmartcontract", content);
+
             var json = await response.Content.ReadAsStringAsync();
 
             using var doc = JsonDocument.Parse(json);
@@ -75,13 +58,12 @@ namespace TronAksaSharp.Services
                 return 0;
 
             string hexValue = result[0].GetString();
+
             var bigInt = BigInteger.Parse("0" + hexValue, System.Globalization.NumberStyles.HexNumber);
 
             return (decimal)bigInt / (decimal)Math.Pow(10, tokenDecimals);
         }
-        /// <summary>
-        /// Bandwidth için stake edilmiş TRX miktarını döner
-        /// </summary>
+        // Bandwidth için stake edilmiş TRX miktarını döner
         public static async Task<decimal> GetBandwidthStakeAsync(string address, TronNetwork tronNetwork)
         {
             if (string.IsNullOrWhiteSpace(address))
@@ -115,11 +97,7 @@ namespace TronAksaSharp.Services
 
             return bandwidthStake / 1_000_000m;
         }
-
-
-        /// <summary>
-        /// Energy için stake edilmiş TRX miktarını döner
-        /// </summary>
+        // Energy için stake edilmiş TRX miktarını döner
         public static async Task<decimal> GetEnergyStakeAsync(string address, TronNetwork tronNetwork)
         {
             if (string.IsNullOrWhiteSpace(address))
@@ -151,7 +129,6 @@ namespace TronAksaSharp.Services
                 }
             }
 
-            // account_resource içindeki frozen_balance_for_energy'yi de ekle
             if (acc.TryGetProperty("account_resource", out var res) && res.ValueKind == JsonValueKind.Object)
             {
                 if (res.TryGetProperty("frozen_balance_for_energy", out var frozenEnergy) &&

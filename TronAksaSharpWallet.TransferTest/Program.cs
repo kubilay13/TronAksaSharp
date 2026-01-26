@@ -17,7 +17,7 @@ string receiverAddress = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N";
 
 //-----------------------------------------------------------------------------
 
-// TRX TRANSFER TESTİ (DÜZENLENMİŞ)
+// TRX TRANSFER TESTİ (TRX – Nile TestNet)
 Step("TRX TRANSFER");
 var trx = await TronClient.SendTRXAsync(
     senderAddress,
@@ -42,7 +42,7 @@ var trc20 = await TronClient.SendTRC20Async(
     receiverAddress,
     usdtContract,
     1,
-    6,
+    decimals,
     TronNetwork.NileTestNet
 );
 

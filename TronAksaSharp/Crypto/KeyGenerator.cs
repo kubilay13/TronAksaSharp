@@ -17,7 +17,6 @@ namespace TronAksaSharp.TronCrypto
             var keyPair = gen.GenerateKeyPair();
             return Fix32(((ECPrivateKeyParameters)keyPair.Private).D.ToByteArrayUnsigned());
         }
-
         public static byte[] PrivateKeyToPublicKey(byte[] privateKey)
         { 
             var ecParams = SecNamedCurves.GetByName("secp256k1");

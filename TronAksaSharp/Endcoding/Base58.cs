@@ -17,7 +17,6 @@ namespace TronAksaSharp.Endcoding
                 intData /= 58;
                 result.Insert(0, Alphabet[remainder]);
             }
-            // Leading zero bytes
             foreach (byte b in data)
             {
                 if (b == 0) result.Insert(0, '1');
@@ -36,7 +35,6 @@ namespace TronAksaSharp.Endcoding
                 intData = intData * 58 + digit;
             }
 
-            // Leading zero bytes
             int leadingZeros = s.TakeWhile(c => c == '1').Count();
             var bytesWithoutSign = intData.ToByteArray().Reverse().SkipWhile(b => b == 0).ToArray();
             return Enumerable.Repeat((byte)0, leadingZeros).Concat(bytesWithoutSign).ToArray();

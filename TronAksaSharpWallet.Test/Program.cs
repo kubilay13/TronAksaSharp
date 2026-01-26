@@ -61,16 +61,17 @@ Console.WriteLine($"USDT Balance: {usdtBalance}");
 //-----------------------------------------------------------------------------
 
 // TRX TRANSFER TESTİ (DÜZENLENMİŞ)
-Step("TRX TRANSFER");
+
 string senderAddress = "TMYMQWbWrKnK4QLeLD7QWhcE38t2vH3wto";
 string senderPrivateKey = "46599a45b3f178f6406f3b53f4b4f61f0cd9b6d4b2dab318c765d5d2fe78b1b9"; // Gönderen cüzdanın özel anahtarı 
 string receiverAddress = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N";
 
+Step("TRX TRANSFER");
 var trx = await TronClient.SendTRXAsync(
     senderAddress,
     senderPrivateKey,
     receiverAddress,
-    1,
+    10,
     TronNetwork.NileTestNet
 );
 
@@ -88,8 +89,8 @@ var trc20 = await TronClient.SendTRC20Async(
     senderPrivateKey,
     receiverAddress,
     usdtContract,
-    1,
-    6,
+    10,
+    decimals,
     TronNetwork.NileTestNet
 );
 
