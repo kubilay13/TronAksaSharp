@@ -5,19 +5,32 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Title>Tron Aksa Sharp</Title>
-    <Version>1.0.1</Version>
+    <Version>2.0.0</Version>
     <Authors>kubilay efe akdoğan</Authors>
     <Company>Kubilay Efe Akdoğan</Company>
-    <Description>TronAksaSharp, Tron uyumlu cüzdanlar oluşturmak için hafif ve açık kaynaklı bir C# kütüphanesidir.
-Private key üretimi, public key türetme ve adres hesaplama destekler. Gelecekte transfer, bakiye sorgulama ve diğer cüzdan işlemleri eklenecektir.</Description>
-    <Copyright>copyright 2025</Copyright>
+    <Description>TronAksaSharp, Tron uyumlu cüzdanlar oluşturmak için hafif ve açık kaynaklı bir C# kütüphanesidir. Private key üretimi, public key türetme ve adres hesaplama destekler. Transfer, bakiye sorgulama ve diğer cüzdan işlemleri .</Description>
+    <Copyright>copyright 2026</Copyright>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>Tron Blockchain Wallet Transfer</PackageTags>
+    <PackageTags>Tron Blockchain Wallet Transfer </PackageTags>
     <NeutralLanguage>tr-TR</NeutralLanguage>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageIcon></PackageIcon>
+    <PackageReadmeFile>readme_2.0.0.md</PackageReadmeFile>
+    <PackageReleaseNotes>TRX ve TRC20 transfer metodları eklenip kullanıcıların kullanımı kolaylaştırmak için kolaylaştırıldı , Tron Cüzdanlara TRC-20 Token bakiye sorgulama eklendi ve permission_id + expectedAddress mantığı eklendi , ToHex32Parameter + contract call düzenlenerek çözüldü ,  bütün testnet stabil halde mainnet için hazır.</PackageReleaseNotes>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageLicenseFile>MIT License.md</PackageLicenseFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\..\..\Desktop\MIT License.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\..\..\Desktop\readme_2.0.0.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
 
 
