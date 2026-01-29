@@ -69,34 +69,53 @@ namespace TronAksaSharp.Services
         {
             string baseUrl = TronEndpoints.GetBaseUrl(network);
 
-            var payload = JsonSerializer.Deserialize<Dictionary<string, object>>(tx.GetRawText());
+            using var txDoc = JsonDocument.Parse(tx.GetRawText());
+            var root = txDoc.RootElement;
+
+            var payload = new Dictionary<string, object>();
+
+            foreach (var prop in root.EnumerateObject())
+            {
+                payload[prop.Name] = prop.Value;
+            }
 
             payload["signature"] = new[] { signatureHex };
 
             using var client = new HttpClient();
             var content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
 
-            var response = await client.PostAsync($"{baseUrl}/wallet/broadcasttransaction", content);
+            var response = await client.PostAsync(
+                $"{baseUrl}/wallet/broadcasttransaction", content
+
+            );
 
             var json = await response.Content.ReadAsStringAsync();
             using var doc = JsonDocument.Parse(json);
 
-            if (doc.RootElement.TryGetProperty("result", out var result) && result.ValueKind == JsonValueKind.True)
+            if (!doc.RootElement.TryGetProperty("result", out var result) ||
+                result.ValueKind != JsonValueKind.True)
             {
-                return new TransferResult { Success = true };
+                string? error = null;
+
+                if (doc.RootElement.TryGetProperty("message", out var msg))
+                {
+                    error = Encoding.UTF8.GetString(
+                        Convert.FromHexString(msg.GetString()));
+                }
+
+                return new TransferResult
+                {
+                    Success = false,
+                    Error = error ?? json
+                };
             }
 
-            string? error = null;
-            if (doc.RootElement.TryGetProperty("message", out var msg))
-            {
-                error = Encoding.UTF8.GetString(Convert.FromHexString(msg.GetString()));
-
-            }
+            string txId = doc.RootElement.GetProperty("txid").GetString();
 
             return new TransferResult
             {
-                Success = false,
-                Error = error ?? json
+                Success = true,
+                TxId = txId
             };
         }
         public static async Task<JsonDocument> CreateTRC20TransactionAsync(string fromAddress, string toAddress, string contractAddress, decimal amount, int decimals, int permissionId, TronNetwork network)
@@ -127,11 +146,7 @@ namespace TronAksaSharp.Services
 
             if (!doc.RootElement.GetProperty("result").GetProperty("result").GetBoolean())
             {
-                string error = doc.RootElement
-                    .GetProperty("result")
-                    .GetProperty("message")
-                    .GetString();
-
+                string error = doc.RootElement.GetProperty("result").GetProperty("message").GetString();
                 throw new Exception("TRC20 FAILED: " + error);
             }
             return doc;
