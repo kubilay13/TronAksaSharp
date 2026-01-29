@@ -17,14 +17,14 @@ Bu kütüphane ile kolayca **private key → public key → Tron adresi** dönü
 - Base58Check formatında okunabilir adres üretimi (bağımsız Base58 implementasyonu)
 - Adres byte uzunluğu kontrolü
 - Cüzdanın TRX ve TRC-20 token kontrolü (MainNet,Nile,Shasta) Dahil
-- TRX ve TRC20 Transferi (MainNet,Nile,Shasta) Dahil
+- TRX ve TRC20 Transfer İşlemleri (MainNet,Nile,Shasta) Dahil
 - Cüzdanın stake edilen varlıkların kontrolu (Energy,Bandwidth)
+- İşlemlerin Detaylarını görme
 
 ---
 
 ## Yakında Gelecek Özellikler :
 - **Akıllı Kontrat Etkileşimi** - Tron smart contract'ları ile çalışma
-- İşlemlerin Detaylarını görme
 - Cüzdan Dinleme
   
 
@@ -44,7 +44,11 @@ Bu kütüphane ile kolayca **private key → public key → Tron adresi** dönü
    ```bash
    Install-Package BouncyCastle
 ---
+
 NOT: Base58 işlemleri artık kütüphane içinde, SimpleBase bağımlılığı kaldırıldı.
+---
+ÖNEMLİ : Tron ağındaki bazı node dengesizliklerinden dolayı yalnızca TRC20 token işlemlerinin transfer detaylarında blok numarası hatası oluşabilmektedir. Normal TRX işlemlerinde herhangi bir sorun gözlemlenmemektedir. Bu nedenle, TRC20 işlemleri için Trongrid kullanımı önerilmektedir.
+---
 
 #### Yeni Cüzdan Oluşturma : 
 ```bash
