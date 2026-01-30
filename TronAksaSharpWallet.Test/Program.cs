@@ -75,8 +75,8 @@ var trx = await TronClient.SendTRXAsync(
     10, 
     TronNetwork.NileTestNet);
 
-var txInfo = await ManualTransactionInfoService.WaitForConfirmationAsync(trx.TxId, TronNetwork.NileTestNet); // TRON NODE DENGESİZLİKLERİNDEN DOLAYI BAZEN HATA
-                                                                                                             // VEREBİLİR BU YÜZDEN TRON GRİD KULLANMANIZ TAVSİYE EDİLİR.
+var txInfo = await ManualTransactionInfoService.WaitForTransactionAsync(trx.TxId, TronNetwork.NileTestNet);
+
 
 Console.WriteLine("----- TX INFO -----");
 Console.WriteLine("Block Number : " + txInfo.BlockNumber);
@@ -112,8 +112,12 @@ var trc20 = await TronClient.SendTRC20Async(
     TronNetwork.NileTestNet
 );
 
-var trc20TxInfo = await ManualTransactionInfoService.WaitForTRC20TransactionFixedAsync(trc20.TxId, TronNetwork.NileTestNet, decimals, usdtContract); // TRON NODE DENGESİZLİKLERİNDEN DOLAYI BAZEN HATA
-                                                                                                                                                     // VEREBİLİR BU YÜZDEN TRON GRİD KULLANMANIZ TAVSİYE EDİLİR.
+var trc20TxInfo = await ManualTransactionInfoService.WaitForTransactionAsync(
+    trc20.TxId,
+    TronNetwork.NileTestNet,
+    decimals,
+    usdtContract);
+
 
 
 Console.WriteLine("----- TRC20 TX INFO -----");
