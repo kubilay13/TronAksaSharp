@@ -3,7 +3,7 @@ using System.Text;
 using System.Text.Json;
 using TronAksaSharp.Address;
 using TronAksaSharp.Enums;
-using TronAksaSharp.Models;
+using TronAksaSharp.Models.TronTransaction;
 using TronAksaSharp.Networks;
 
 namespace TronAksaSharp.Services

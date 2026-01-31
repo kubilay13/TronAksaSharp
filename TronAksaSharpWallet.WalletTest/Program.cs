@@ -9,6 +9,10 @@ static void Step(string title)
 }
 
 
+//-----------------------------------------------------------------------------TRONGRİD HESAP BİLGİLERİ
+
+//-----------------------------------------------------------------------------TRONGRİD HESAP BİLGİLERİ
+
 // TRON ADDRESS GENERATE :
 Step("WALLET OLUŞTURMA");
 string ToHex(byte[] data) => BitConverter.ToString(data).Replace("-", "");
@@ -58,3 +62,6 @@ Console.WriteLine($"USDT Balance: {usdtBalance}");
 
 
 //-----------------------------------------------------------------------------
+
+
+

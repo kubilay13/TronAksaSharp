@@ -1,4 +1,4 @@
-﻿namespace TronAksaSharp.Models
+﻿namespace TronAksaSharp.Models.TronTransaction
 {
     public class TransactionInfo
     {

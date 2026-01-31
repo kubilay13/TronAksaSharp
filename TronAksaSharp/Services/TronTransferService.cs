@@ -4,7 +4,7 @@ using System.Text.Json;
 using TronAksaSharp.Address;
 using TronAksaSharp.Crypto;
 using TronAksaSharp.Enums;
-using TronAksaSharp.Models;
+using TronAksaSharp.Models.TronTransaction;
 using TronAksaSharp.Networks;
 
 namespace TronAksaSharp.Services

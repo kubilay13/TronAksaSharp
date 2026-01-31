@@ -1,6 +1,8 @@
 ﻿using TronAksaSharp.Crypto;
 using TronAksaSharp.Enums;
-using TronAksaSharp.Models;
+using TronAksaSharp.Models.Domain.TronAccount;
+using TronAksaSharp.Models.TronGrid.TronAccount;
+using TronAksaSharp.Models.TronTransaction;
 using TronAksaSharp.Services;
 using TronAksaSharp.TronCrypto;
 
@@ -8,14 +10,19 @@ namespace TronAksaSharp.Wallet
 {
     public static class TronClient
     {
+        internal static string Apikey { get; private set; }
+        public static void Initialize(string apiKey)
+        {
+            Apikey = apiKey;
+        }
         // ================= TRON WALLET =================
-        public static Models.Wallet CreateTronWallet()
+        public static Models.Domain.TronAccount.Wallet CreateTronWallet()
         {
             var privateKey = KeyGenerator.GeneratePrivateKey(); // Yeni bir özel anahtar oluşturur
             var publicKey = KeyGenerator.PrivateKeyToPublicKey(privateKey); // Özel anahtardan genel anahtar türetir
             var address = AddressGenerator.PublicKeyToAddress(publicKey); // Genel anahtardan Tron adresi oluşturur
 
-            return new Models.Wallet
+            return new Models.Domain.TronAccount.Wallet
             {
                 PrivateKey = privateKey,
                 PublicKey = publicKey,
@@ -75,5 +82,7 @@ namespace TronAksaSharp.Wallet
 
             return await TronTransferService.BroadcastAsync(tx, signature, network);
         }
+
+        // ================= TRONGRİD CÜZDAN BİLGİLERİ =================
     }
 }

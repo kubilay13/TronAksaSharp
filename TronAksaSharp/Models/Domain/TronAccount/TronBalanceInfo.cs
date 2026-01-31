@@ -1,4 +1,4 @@
-﻿namespace TronAksaSharp.Models
+﻿namespace TronAksaSharp.Models.Domain.TronAccount
 {
     public class TronBalanceInfo
     {

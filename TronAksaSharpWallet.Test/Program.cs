@@ -9,6 +9,9 @@ static void Step(string title)
     Console.WriteLine($"════════════ {title} ════════════");
 }
 
+//-----------------------------------------------------------------------------TRONGRİD HESAP BİLGİLERİ
+
+//-----------------------------------------------------------------------------TRONGRİD HESAP BİLGİLERİ
 
 
 // TRON ADDRESS GENERATE :
@@ -78,7 +81,7 @@ var trx = await TronClient.SendTRXAsync(
 var txInfo = await ManualTransactionInfoService.WaitForTransactionAsync(trx.TxId, TronNetwork.NileTestNet);
 
 
-Console.WriteLine("----- TX INFO -----");
+Console.WriteLine("----- TRX TRANSFER INFO -----");
 Console.WriteLine("Block Number : " + txInfo.BlockNumber);
 Console.WriteLine("Txn Hash : " + txInfo.TxId);
 Console.WriteLine("Timestamp    : " + DateTimeOffset.FromUnixTimeMilliseconds(txInfo.Timestamp).UtcDateTime);
@@ -91,7 +94,6 @@ Console.WriteLine("Energy Used : " + txInfo.EnergyUsed);
 Console.WriteLine("Net Fee     : " + txInfo.NetFee);
 Console.WriteLine("-------------------");
 Console.WriteLine("TRX Transferi Başarılı Şekilde Gönderildi.");
-
 
 
 
@@ -120,7 +122,7 @@ var trc20TxInfo = await ManualTransactionInfoService.WaitForTransactionAsync(
 
 
 
-Console.WriteLine("----- TRC20 TX INFO -----");
+Console.WriteLine("----- TRC20 TRANSFER INFO -----");
 Console.WriteLine("Block Number : " + trc20TxInfo.BlockNumber);
 Console.WriteLine("Txn Hash     : " + trc20TxInfo.TxId);
 Console.WriteLine("Timestamp    : " + DateTimeOffset.FromUnixTimeMilliseconds(trc20TxInfo.Timestamp).UtcDateTime);
