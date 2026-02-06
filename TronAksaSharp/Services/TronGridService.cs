@@ -1,5 +1,7 @@
 ﻿using System.Net.Http.Json;
+using TronAksaSharp.Enums;
 using TronAksaSharp.Models.TronGrid.TronAccount;
+using TronAksaSharp.Networks;
 
 namespace TronAksaSharp.Services
 {
@@ -7,35 +9,26 @@ namespace TronAksaSharp.Services
     {
         private readonly HttpClient _httpClient;
 
-        public TronGridService(string apikey)
+        public TronGridService(string apiKey, TronNetwork tronNetwork)
         {
-            _httpClient = new HttpClient();
+            _httpClient = new HttpClient
+            {
+                BaseAddress = new Uri(TronEndpoints.GetBaseUrl(tronNetwork))
+            };
 
-            _httpClient.BaseAddress= new Uri("https://nile.trongrid.io");
-
-            _httpClient.DefaultRequestHeaders.Add("TRON-PRO-API-KEY",apikey);
+            _httpClient.DefaultRequestHeaders.Add("TRON-PRO-API-KEY", apiKey);
         }
 
+        // Belirtilen TRON adresinin tüm cüzdan bilgilerini döner
         public async Task<TronAccount?> GetAccountAsync(string address)
         {
-            // GET /v1/accounts/{address}
-            try
-            {
-                var response = await _httpClient.GetAsync($"/v1/accounts/{address}");
+            var response = await _httpClient.GetAsync($"/v1/accounts/{address}");
+            response.EnsureSuccessStatusCode();
 
-                response.EnsureSuccessStatusCode(); // HTTP hatalarında exception fırlatır
+            var wrapper = await response.Content
+                .ReadFromJsonAsync<TronAccountWrapper>();
 
-                // JSON'u doğrudan TronAccount sınıfına çevir
-                var tronAccountWrapper = await response.Content.ReadFromJsonAsync<TronAccountWrapper>();
-
-                return tronAccountWrapper?.Data?[0]; // JSON yapısında "data" dizisi var
-            }
-            catch (HttpRequestException ex)
-            {
-                // Hata loglama veya geri dönüş
-                Console.WriteLine($"HTTP Error: {ex.Message}");
-                return null;
-            }
+            return wrapper?.Data?.FirstOrDefault();
         }
     }
 }

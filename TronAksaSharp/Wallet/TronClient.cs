@@ -8,13 +8,14 @@ using TronAksaSharp.TronCrypto;
 
 namespace TronAksaSharp.Wallet
 {
-    public static class TronClient
+    public class TronClient
     {
-        internal static string Apikey { get; private set; }
-        public static void Initialize(string apiKey)
+        private readonly TronGridService _tronGridService;
+        public TronClient(string apiKey, TronNetwork tronNetwork)
         {
-            Apikey = apiKey;
+            _tronGridService = new TronGridService(apiKey, tronNetwork);
         }
+
         // ================= TRON WALLET =================
         public static Models.Domain.TronAccount.Wallet CreateTronWallet()
         {
@@ -84,5 +85,9 @@ namespace TronAksaSharp.Wallet
         }
 
         // ================= TRONGRİD CÜZDAN BİLGİLERİ =================
+        public async Task<TronAccount?> GetTronGridAccountDetailAsync(string address)
+        {
+            return await _tronGridService.GetAccountAsync(address);
+        }
     }
 }

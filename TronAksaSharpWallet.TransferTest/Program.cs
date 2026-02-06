@@ -1,6 +1,4 @@
-﻿using Org.BouncyCastle.Crypto;
-using TronAksaSharp.Enums;
-using TronAksaSharp.Models.TronGrid.TronAccount;
+﻿using TronAksaSharp.Enums;
 using TronAksaSharp.Services;
 using TronAksaSharp.Wallet;
 
@@ -33,7 +31,7 @@ var txInfo = await ManualTransactionInfoService.WaitForTransactionAsync( //TRX i
     TronNetwork.NileTestNet);
 
 
-Console.WriteLine("----- TX INFO -----");
+Console.WriteLine("----- TRX TRANSFER INFO RPC MANUEL ÇAĞRISI -----");
 Console.WriteLine("Block Number : " + txInfo.BlockNumber);
 Console.WriteLine("Txn Hash : " + txInfo.TxId);
 Console.WriteLine("Timestamp    : " + DateTimeOffset.FromUnixTimeMilliseconds(txInfo.Timestamp).UtcDateTime);
@@ -74,7 +72,7 @@ var trc20TxInfo = await ManualTransactionInfoService.WaitForTransactionAsync( //
     usdtContract);
 
 
-Console.WriteLine("----- TRC20 TX INFO -----");
+Console.WriteLine("----- TRC20 TRANSFER INFO RPC MANUEL ÇAĞRISI -----");
 Console.WriteLine("Block Number : " + trc20TxInfo.BlockNumber);
 Console.WriteLine("Txn Hash     : " + trc20TxInfo.TxId);
 Console.WriteLine("Timestamp    : " + DateTimeOffset.FromUnixTimeMilliseconds(trc20TxInfo.Timestamp).UtcDateTime);
@@ -86,3 +84,4 @@ Console.WriteLine("Fee (SUN)    : " + trc20TxInfo.Fee);
 Console.WriteLine("Energy Used  : " + trc20TxInfo.EnergyUsed);
 Console.WriteLine("Net Fee      : " + trc20TxInfo.NetFee);
 Console.WriteLine("--------------------------");
+Console.WriteLine("TRC20 Transferi Başarılı Şekilde Gönderildi.");

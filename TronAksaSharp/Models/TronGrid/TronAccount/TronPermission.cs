@@ -1,23 +1,31 @@
-﻿namespace TronAksaSharp.Models.TronGrid.TronAccount
+﻿using System.Text.Json.Serialization;
+
+namespace TronAksaSharp.Models.TronGrid.TronAccount
 {
     public class TronPermission
     {
-        // owner / active
+        // Permission adı (owner / active)
+        [JsonPropertyName("permission_name")]
         public string PermissionName { get; set; }
 
         // Permission tipi
+        [JsonPropertyName("type")]
         public string Type { get; set; }
 
-        // İmza eşiği
+        // İmza eşiği (multi-sig)
+        [JsonPropertyName("threshold")]
         public int Threshold { get; set; }
 
         // Permission ID
+        [JsonPropertyName("id")]
         public int Id { get; set; }
 
-        // Hangi işlemlere izin var
+        // İzin verilen işlemler (bitmask)
+        [JsonPropertyName("operations")]
         public string Operations { get; set; }
 
         // Yetkili adresler
+        [JsonPropertyName("keys")]
         public List<TronPermissionKey> Keys { get; set; }
     }
 }

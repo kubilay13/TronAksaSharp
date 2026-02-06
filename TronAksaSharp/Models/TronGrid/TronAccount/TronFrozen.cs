@@ -1,11 +1,15 @@
-﻿namespace TronAksaSharp.Models.TronGrid.TronAccount
+﻿using System.Text.Json.Serialization;
+
+namespace TronAksaSharp.Models.TronGrid.TronAccount
 {
     public class TronFrozen
-    {
-        // Freeze edilen miktar (SUN)
+    { 
+        // Dondurulan miktar (SUN)
+        [JsonPropertyName("amount")]
         public long Amount { get; set; }
 
-        // ENERGY / BANDWIDTH / TRON_POWER
+        // Freeze tipi: ENERGY / BANDWIDTH / TRON_POWER
+        [JsonPropertyName("type")]
         public string Type { get; set; }
     }
 }
