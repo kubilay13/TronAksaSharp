@@ -4,6 +4,7 @@ namespace TronAksaSharp.Models.TronGrid.TronTransaction
 {
     public class TronTransaction
     {
+
         [JsonPropertyName("txID")]
         public string TxId { get; set; }
 
@@ -12,5 +13,14 @@ namespace TronAksaSharp.Models.TronGrid.TronTransaction
 
         [JsonPropertyName("ret")]
         public List<TronTransactionResult> Result { get; set; }
+        // SUCCESS / FAILED
+
+        [JsonPropertyName("raw_data")]
+        public RawData RawData { get; set; }
+        // from / to / amount burada
+
+        [JsonPropertyName("receipt")]
+        public Receipt Receipt { get; set; }
+        // fee burada
     }
 }

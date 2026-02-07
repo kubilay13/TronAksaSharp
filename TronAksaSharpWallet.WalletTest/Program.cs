@@ -28,33 +28,6 @@ Console.WriteLine("Adres byte uzunluğu = " + addrBytes.Length);
 
 //-----------------------------------------------------------------------------
 
-//TRONGRİD İŞLEM DETAYLARI ÇEKME :
-Step("TRONGRİD İLE İŞLEM DETAYLARI ÇEKME");
-var client = new TronClient(
-    "TRONGRİD-APIKEY",// Buraya kendi TronGrid API anahtarınızı yazmalısınız
-    TronNetwork.NileTestNet
-);
-
-var txs = await client.GetTransactionsAsync(
-    "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",  // Sorgulamak istediğiniz TRON adresi
-    1 // Çekmek istediğiniz işlem sayısı max 200 trongrid limitlerine göre
-);
-
-foreach (var tx in txs)
-{
-    Console.WriteLine("TX: " + tx.TxId);
-    Console.WriteLine(
-        "TIME: " +
-        DateTimeOffset.FromUnixTimeMilliseconds(tx.BlockTimestamp)
-    );
-    Console.WriteLine(
-        "STATUS: " + tx.Result?[0]?.Status
-    );
-    Console.WriteLine("--------------");
-}
-
-//-----------------------------------------------------------------------------
-
 // TRONGRİD HESAP BİLGİLERİ ÇEKME :
 Step("ÖRNEK ADRES BİLGİLERİNİ TRONGRİD İLE SORGULAMA");
 var service = new TronClient("TRONGRİD-APİ-KEY", TronNetwork.NileTestNet); // Buraya kendi TronGrid API anahtarınızı yazmalısınız
@@ -137,6 +110,39 @@ if (accountdetail.Trc20Tokens != null)
 else
 {
     Console.WriteLine("TRC20 yok");
+}
+
+//-----------------------------------------------------------------------------
+//TRONGRİD TRX İŞLEM DETAYLARI ÇEKME :
+
+Step("TRONGRİD İLE İŞLEM DETAYLARI ÇEKME");
+
+var txservice = new TronClient(
+    apiKey: "", // Buraya kendi TronGrid API anahtarınızı yazmalısınız
+    tronNetwork: TronNetwork.NileTestNet // Buraya sorgulamak istediğiniz TRON ağı (MainNet, NileTestNet, ShastaTestNet)
+);
+
+var txs = await txservice.GetTronGridTransactionDetailsAsync(
+    address: "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", // Buraya sorgulamak istediğiniz TRON adresini yazabilirsiniz
+    limit: 200 // Çekmek istediğiniz işlem sayısı (max 200) TRONGRİD SINIRI 
+);
+
+foreach (var tx in txs)
+{
+    var date = DateTimeOffset.FromUnixTimeMilliseconds(tx.BlockTimestamp).LocalDateTime;
+
+    var v = tx.RawData.Contract[0].Parameter.Value;
+    Console.WriteLine($"TX: {tx.TxId}");
+    Console.WriteLine($"Date : {date:yyyy-MM-dd HH:mm:ss}");
+    Console.WriteLine($"From: {v.From}");
+    Console.WriteLine($"To: {v.To}");
+    Console.WriteLine($"Amount: {v.Amount / 1_000_000m} TRX");
+
+    var fee = ((tx.Receipt?.NetFee ?? 0) + (tx.Receipt?.EnergyFee ?? 0)) / 1_000_000m;
+
+    Console.WriteLine($"Fee: {fee} TRX");
+    Console.WriteLine($"Status: {tx.Result[0].Status}");
+    Console.WriteLine("--------------");
 }
 
 //-----------------------------------------------------------------------------

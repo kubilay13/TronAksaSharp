@@ -9,8 +9,6 @@ static void Step(string title)
 }
 
 
-
-
 //-----------------------------------------------------------------------------
 
 // Örnek cüzdan bilgileri (Nile TestNet)"

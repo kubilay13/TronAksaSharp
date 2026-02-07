@@ -3,14 +3,12 @@ using TronAksaSharp.Enums;
 using TronAksaSharp.Models.TronGrid.TronAccount;
 using TronAksaSharp.Models.TronGrid.TronTransaction;
 using TronAksaSharp.Networks;
-using static System.Net.WebRequestMethods;
 
 namespace TronAksaSharp.Services
 {
     public class TronGridService
     {
         private readonly HttpClient _httpClient;
-
         public TronGridService(string apiKey, TronNetwork tronNetwork)
         {
             _httpClient = new HttpClient
@@ -33,7 +31,7 @@ namespace TronAksaSharp.Services
         }
 
         // Belirtilen TRON adresine ait işlemleri döner (limit parametresi ile sonuç sayısı sınırlandırılabilir TRONGRİD MAX SINIR 200 SONRA HATA DÖNER APİKEY BAN YİYEBİLİRSİNİZ.)
-        public async Task<List<TronTransaction>> GetTransactionsAsync(string address, int? limit = null)
+        public async Task<List<TronTransaction>> GetTransactiondDetailsAsync(string address, int? limit = null)
         {
             var url = $"/v1/accounts/{address}/transactions";
 
