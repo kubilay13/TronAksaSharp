@@ -9,10 +9,6 @@ static void Step(string title)
 }
 
 
-//-----------------------------------------------------------------------------TRONGRİD HESAP BİLGİLERİ
-
-//-----------------------------------------------------------------------------TRONGRİD HESAP BİLGİLERİ
-
 // TRON ADDRESS GENERATE :
 Step("WALLET OLUŞTURMA");
 string ToHex(byte[] data) => BitConverter.ToString(data).Replace("-", "");
@@ -30,12 +26,38 @@ Step("ADDRESS BİLGİSİ");
 byte[] addrBytes = Base58.Decode($"{createWallet.Address}");
 Console.WriteLine("Adres byte uzunluğu = " + addrBytes.Length);
 
+//-----------------------------------------------------------------------------
+
+//TRONGRİD İŞLEM DETAYLARI ÇEKME :
+Step("TRONGRİD İLE İŞLEM DETAYLARI ÇEKME");
+var client = new TronClient(
+    "TRONGRİD-APIKEY",// Buraya kendi TronGrid API anahtarınızı yazmalısınız
+    TronNetwork.NileTestNet
+);
+
+var txs = await client.GetTransactionsAsync(
+    "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N",  // Sorgulamak istediğiniz TRON adresi
+    1 // Çekmek istediğiniz işlem sayısı max 200 trongrid limitlerine göre
+);
+
+foreach (var tx in txs)
+{
+    Console.WriteLine("TX: " + tx.TxId);
+    Console.WriteLine(
+        "TIME: " +
+        DateTimeOffset.FromUnixTimeMilliseconds(tx.BlockTimestamp)
+    );
+    Console.WriteLine(
+        "STATUS: " + tx.Result?[0]?.Status
+    );
+    Console.WriteLine("--------------");
+}
 
 //-----------------------------------------------------------------------------
 
 // TRONGRİD HESAP BİLGİLERİ ÇEKME :
 Step("ÖRNEK ADRES BİLGİLERİNİ TRONGRİD İLE SORGULAMA");
-var service = new TronClient("TRONGRİD-APİ-KEY", TronNetwork.NileTestNet);
+var service = new TronClient("TRONGRİD-APİ-KEY", TronNetwork.NileTestNet); // Buraya kendi TronGrid API anahtarınızı yazmalısınız
 var accountdetail = await service.GetTronGridAccountDetailAsync("TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N"); // Buraya sorgulamak istediğiniz TRON adresini yazabilirsiniz
 
 if (accountdetail == null)

@@ -2,6 +2,7 @@
 using TronAksaSharp.Enums;
 using TronAksaSharp.Models.Domain.TronAccount;
 using TronAksaSharp.Models.TronGrid.TronAccount;
+using TronAksaSharp.Models.TronGrid.TronTransaction;
 using TronAksaSharp.Models.TronTransaction;
 using TronAksaSharp.Services;
 using TronAksaSharp.TronCrypto;
@@ -88,6 +89,12 @@ namespace TronAksaSharp.Wallet
         public async Task<TronAccount?> GetTronGridAccountDetailAsync(string address)
         {
             return await _tronGridService.GetAccountAsync(address);
+        }
+
+        // ================= TRONGRİD İŞLEM BİLGİLERİ =================
+        public Task<List<TronTransaction>> GetTransactionsAsync(string address, int? limit = null)
+        {
+            return _tronGridService.GetTransactionsAsync(address, limit);
         }
     }
 }

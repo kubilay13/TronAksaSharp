@@ -1,7 +1,9 @@
 ﻿using System.Net.Http.Json;
 using TronAksaSharp.Enums;
 using TronAksaSharp.Models.TronGrid.TronAccount;
+using TronAksaSharp.Models.TronGrid.TronTransaction;
 using TronAksaSharp.Networks;
+using static System.Net.WebRequestMethods;
 
 namespace TronAksaSharp.Services
 {
@@ -25,10 +27,27 @@ namespace TronAksaSharp.Services
             var response = await _httpClient.GetAsync($"/v1/accounts/{address}");
             response.EnsureSuccessStatusCode();
 
-            var wrapper = await response.Content
-                .ReadFromJsonAsync<TronAccountWrapper>();
+            var wrapper = await response.Content.ReadFromJsonAsync<TronAccountWrapper>();
 
             return wrapper?.Data?.FirstOrDefault();
+        }
+
+        // Belirtilen TRON adresine ait işlemleri döner (limit parametresi ile sonuç sayısı sınırlandırılabilir TRONGRİD MAX SINIR 200 SONRA HATA DÖNER APİKEY BAN YİYEBİLİRSİNİZ.)
+        public async Task<List<TronTransaction>> GetTransactionsAsync(string address, int? limit = null)
+        {
+            var url = $"/v1/accounts/{address}/transactions";
+
+            if (limit.HasValue)
+            {
+                url += $"?limit={limit.Value}";
+            }         
+
+            var res = await _httpClient.GetAsync(url);
+            res.EnsureSuccessStatusCode();
+
+            var wrapper = await res.Content.ReadFromJsonAsync<TronTransactionWrapper>();
+
+            return wrapper?.Data ?? new List<TronTransaction>();
         }
     }
 }
