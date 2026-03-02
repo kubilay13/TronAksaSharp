@@ -116,16 +116,16 @@ Console.WriteLine("====== BİTTİ ======");
 //-----------------------------------------------------------------------------
 //TRONGRİD TRX İŞLEM DETAYLARI ÇEKME :
 
-Step("TRONGRİD İLE İŞLEM DETAYLARI ÇEKME");
+Step("TRONGRİD İLE TRX İŞLEM DETAYLARI ÇEKME");
 
 var txservice = new TronClient(
     apiKey: "", // Buraya kendi TronGrid API anahtarınızı yazmalısınız
     tronNetwork: TronNetwork.NileTestNet // Buraya sorgulamak istediğiniz TRON ağı (MainNet, NileTestNet, ShastaTestNet)
 );
 
-var txs = await txservice.GetTronGridTransactionDetailsAsync(
+var txs = await txservice.GetTronGridTRXTransactionsDetailsAsync(
     address: "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", // Buraya sorgulamak istediğiniz TRON adresini yazabilirsiniz
-    limit: 200 // Çekmek istediğiniz işlem sayısı (max 200) TRONGRİD SINIRI 
+    limit: 1 // Çekmek istediğiniz işlem sayısı (max 200) TRONGRİD SINIRI 
 );
 
 foreach (var tx in txs)
@@ -138,17 +138,31 @@ foreach (var tx in txs)
     Console.WriteLine($"From: {v.From}");
     Console.WriteLine($"To: {v.To}");
     Console.WriteLine($"Amount: {v.Amount / 1_000_000m} TRX");
-
-    var fee = ((tx.Receipt?.NetFee ?? 0) + (tx.Receipt?.EnergyFee ?? 0)) / 1_000_000m;
-
-    Console.WriteLine($"Fee: {fee} TRX");
+    Console.WriteLine($"Fee: {tx.FeeTRX} TRX");
     Console.WriteLine($"Status: {tx.Result[0].Status}");
     Console.WriteLine("--------------");
 }
 
 //-----------------------------------------------------------------------------
+//TRONGRİD TRC-20 İŞLEM DETAYLARI ÇEKME :
+Step("TRONGRİD İLE TRC-20 İŞLEM DETAYLARI ÇEKME");
+var txstrc20 = await txservice.GetTronGridTRC20TransactionsDetailsAsync(
+    address: "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", // Buraya sorgulamak istediğiniz TRON adresini yazabilirsiniz
+    limit: 1 // Çekmek istediğiniz işlem sayısı (max 200) TRONGRİD SINIRI 
+);
+foreach (var tx in txstrc20)
+{
+    Console.WriteLine($"TXID     : {tx.TransactionId}");
+    Console.WriteLine($"From     : {tx.From}");
+    Console.WriteLine($"To       : {tx.To}");
+    Console.WriteLine($"Amount   : {tx.Amount} {tx.TokenInfo.Symbol}");
+    Console.WriteLine($"Fee      : {tx.Fee} TRX");
+    Console.WriteLine($"Status   : {tx.Status}");
+    Console.WriteLine($"Date     : {tx.Timestamp:yyyy-MM-dd HH:mm:ss}");
+    Console.WriteLine("------------------------------");
+}
 
-
+//-----------------------------------------------------------------------------
 // TRX BAKİYE VE STAKE SORGULAMA :
 Step("BAKİYE & STAKE MANUEL RPC ÇAĞRISI");
 string walletAddress = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N"; // Örnek TRON adresi

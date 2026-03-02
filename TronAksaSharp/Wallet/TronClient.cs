@@ -91,10 +91,16 @@ namespace TronAksaSharp.Wallet
             return await _tronGridService.GetAccountAsync(address);
         }
 
-        // ================= TRONGRİD İŞLEM BİLGİLERİ =================
-        public Task<List<TronTransaction>> GetTronGridTransactionDetailsAsync(string address, int? limit = null)
+        // ================= TRONGRİD TRX İŞLEM BİLGİLERİ =================
+        public Task<List<TronTransaction>> GetTronGridTRXTransactionsDetailsAsync(string address, int? limit = null)
         {
-            return _tronGridService.GetTransactiondDetailsAsync(address, limit);
+            return _tronGridService.GetTRXTransactiondDetailsAsync(address, limit);
+        }
+
+        // ================= TRONGRİD TRC20 İŞLEM BİLGİLERİ =================
+        public Task<List<Trc20Transaction>> GetTronGridTRC20TransactionsDetailsAsync(string address, int? limit = null)
+        {
+            return _tronGridService.GetTRC20TransactionDetailsAsync(address, limit);
         }
     }
 }

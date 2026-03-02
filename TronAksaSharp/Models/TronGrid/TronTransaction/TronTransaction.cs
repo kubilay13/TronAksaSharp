@@ -22,5 +22,7 @@ namespace TronAksaSharp.Models.TronGrid.TronTransaction
         [JsonPropertyName("receipt")]
         public Receipt Receipt { get; set; }
         // fee burada
+        [JsonIgnore]
+        public decimal FeeTRX => ((Receipt?.NetFee ?? 0) + (Receipt?.EnergyFee ?? 0)) / 1_000_000m;
     }
 }
