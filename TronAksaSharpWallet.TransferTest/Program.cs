@@ -10,13 +10,13 @@ static void Step(string title)
 
 
 //-----------------------------------------------------------------------------
+// TRX TRANSFER TESTİ (TRX – Nile TestNet)
 
-// Örnek cüzdan bilgileri (Nile TestNet)"
 string senderAddress = "TMYMQWbWrKnK4QLeLD7QWhcE38t2vH3wto";
 string senderPrivateKey = "46599a45b3f178f6406f3b53f4b4f61f0cd9b6d4b2dab318c765d5d2fe78b1b9"; // Gönderen cüzdanın özel anahtarı 
 string receiverAddress = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N";
 
-Step("TRX TRANSFER");
+Step("TRX TRANSFER İŞLEMİ NİLE ");
 var trx = await TronClient.SendTRXAsync(
     senderAddress,
     senderPrivateKey,
@@ -24,9 +24,7 @@ var trx = await TronClient.SendTRXAsync(
     10,
     TronNetwork.NileTestNet);
 
-var txInfo = await ManualTransactionInfoService.WaitForTransactionAsync( //TRX işlemi için tx bilgisi al
-    trx.TxId, 
-    TronNetwork.NileTestNet);
+var txInfo = await ManualTransactionInfoService.WaitForTransactionAsync(trx.TxId, TronNetwork.NileTestNet);
 
 
 Console.WriteLine("----- TRX TRANSFER INFO RPC MANUEL ÇAĞRISI -----");
@@ -46,10 +44,9 @@ Console.WriteLine("TRX Transferi Başarılı Şekilde Gönderildi.");
 
 
 
-
 //-----------------------------------------------------------------------------
 // TRC20 TRANSFER TESTİ (USDT – Nile TestNet)
-Step("TRC20 TRANSFER");
+Step("TRC20 TRANSFER İŞLEMİ NİLE ");
 string usdtContract = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf"; // USDT (Nile)
 int decimals = 6; // USDT için ondalık basamak sayısı
 
@@ -63,11 +60,12 @@ var trc20 = await TronClient.SendTRC20Async(
     TronNetwork.NileTestNet
 );
 
-var trc20TxInfo = await ManualTransactionInfoService.WaitForTransactionAsync( // TRC20 işlemi için tx bilgisi al
+var trc20TxInfo = await ManualTransactionInfoService.WaitForTransactionAsync(
     trc20.TxId,
     TronNetwork.NileTestNet,
     decimals,
     usdtContract);
+
 
 
 Console.WriteLine("----- TRC20 TRANSFER INFO RPC MANUEL ÇAĞRISI -----");

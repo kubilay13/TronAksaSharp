@@ -1,5 +1,4 @@
-﻿using TronAksaSharp.Endcoding;
-using TronAksaSharp.Enums;
+﻿using TronAksaSharp.Enums;
 using TronAksaSharp.Wallet;
 
 static void Step(string title)
@@ -9,28 +8,12 @@ static void Step(string title)
 }
 
 
-// TRON ADDRESS GENERATE :
-Step("WALLET OLUŞTURMA");
-string ToHex(byte[] data) => BitConverter.ToString(data).Replace("-", "");
-var createWallet = TronClient.CreateTronWallet();
-Console.WriteLine($"Cüzdan Adresi :\n {createWallet.Address}");
-Console.WriteLine($"Private Key :\n {ToHex(createWallet.PrivateKey)}");
-Console.WriteLine($"Public Key  :\n {ToHex(createWallet.PublicKey)}");
-
 
 //-----------------------------------------------------------------------------
-
-
-// ADDRESS BYTE UZUNLUĞU SORGULAMA :
-Step("ADDRESS BİLGİSİ");
-byte[] addrBytes = Base58.Decode($"{createWallet.Address}");
-Console.WriteLine("Adres byte uzunluğu = " + addrBytes.Length);
-
-//-----------------------------------------------------------------------------
-
 // TRONGRİD HESAP BİLGİLERİ ÇEKME :
+
 Step("ÖRNEK ADRES BİLGİLERİNİ TRONGRİD İLE SORGULAMA");
-var service = new TronClient("TRONGRİD-APİ-KEY", TronNetwork.NileTestNet); // Buraya kendi TronGrid API anahtarınızı yazmalısınız
+var service = new TronClient("", TronNetwork.NileTestNet); // Buraya kendi TronGrid API anahtarınızı yazmalısınız
 var accountdetail = await service.GetTronGridAccountDetailAsync("TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N"); // Buraya sorgulamak istediğiniz TRON adresini yazabilirsiniz
 
 if (accountdetail == null)
@@ -112,19 +95,21 @@ else
     Console.WriteLine("TRC20 yok");
 }
 
+Console.WriteLine("====== BİTTİ ======");
+
 //-----------------------------------------------------------------------------
 //TRONGRİD TRX İŞLEM DETAYLARI ÇEKME :
 
-Step("TRONGRİD İLE İŞLEM DETAYLARI ÇEKME");
+Step("TRONGRİD İLE TRX İŞLEM DETAYLARI ÇEKME");
 
 var txservice = new TronClient(
     apiKey: "", // Buraya kendi TronGrid API anahtarınızı yazmalısınız
     tronNetwork: TronNetwork.NileTestNet // Buraya sorgulamak istediğiniz TRON ağı (MainNet, NileTestNet, ShastaTestNet)
 );
 
-var txs = await txservice.(
+var txs = await txservice.GetTronGridTRXTransactionsDetailsAsync(
     address: "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", // Buraya sorgulamak istediğiniz TRON adresini yazabilirsiniz
-    limit: 200 // Çekmek istediğiniz işlem sayısı (max 200) TRONGRİD SINIRI 
+    limit: 1 // Çekmek istediğiniz işlem sayısı (max 200) TRONGRİD SINIRI 
 );
 
 foreach (var tx in txs)
@@ -137,44 +122,27 @@ foreach (var tx in txs)
     Console.WriteLine($"From: {v.From}");
     Console.WriteLine($"To: {v.To}");
     Console.WriteLine($"Amount: {v.Amount / 1_000_000m} TRX");
-
-    var fee = ((tx.Receipt?.NetFee ?? 0) + (tx.Receipt?.EnergyFee ?? 0)) / 1_000_000m;
-
-    Console.WriteLine($"Fee: {fee} TRX");
+    Console.WriteLine($"Fee: {tx.FeeTRX} TRX");
     Console.WriteLine($"Status: {tx.Result[0].Status}");
     Console.WriteLine("--------------");
 }
 
-//-----------------------------------------------------------------------------
-
-// TRX BAKİYE VE STAKE SORGULAMA :
-Step("BAKİYE & STAKE MANUEL RPC ÇAĞRISI");
-string walletAddress = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N"; // Örnek TRON adresi
-
-var balances = await TronClient.GetBalancesAsync(walletAddress, TronNetwork.NileTestNet);
-
-Console.WriteLine($"TRX       : {balances.TrxBalance}");
-Console.WriteLine($"Bandwidth : {balances.BandwidthStake}");
-Console.WriteLine($"Energy    : {balances.EnergyStake}");
-
-
 
 //-----------------------------------------------------------------------------
-
-// TRC20 TOKEN BAKİYE SORGULAMA :
-Step("TRC20 BAKİYE MANUEL RPC ÇAĞRISI");
-string trc20Contract = "TXYZopYRdj2D9XRtbG411XZZ3kM5VkAeBf"; // USDT TRC20 Contract Address
-decimal usdtBalance = await TronClient.GetTRC20BalanceAsync(
-    walletAddress,
-    trc20Contract,
-    6, // USDT decimals
-    TronNetwork.NileTestNet
+//TRONGRİD TRC-20 İŞLEM DETAYLARI ÇEKME :
+Step("TRONGRİD İLE TRC-20 İŞLEM DETAYLARI ÇEKME");
+var txstrc20 = await txservice.GetTronGridTRC20TransactionsDetailsAsync(
+    address: "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", // Buraya sorgulamak istediğiniz TRON adresini yazabilirsiniz
+    limit: 1 // Çekmek istediğiniz işlem sayısı (max 200) TRONGRİD SINIRI 
 );
-
-Console.WriteLine($"USDT Balance: {usdtBalance}");
-
-
-//-----------------------------------------------------------------------------
-
-
-
+foreach (var tx in txstrc20)
+{
+    Console.WriteLine($"TXID     : {tx.TransactionId}");
+    Console.WriteLine($"From     : {tx.From}");
+    Console.WriteLine($"To       : {tx.To}");
+    Console.WriteLine($"Amount   : {tx.Amount} {tx.TokenInfo.Symbol}");
+    Console.WriteLine($"Fee      : {tx.Fee} TRX");
+    Console.WriteLine($"Status   : {tx.Status}");
+    Console.WriteLine($"Date     : {tx.Timestamp:yyyy-MM-dd HH:mm:ss}");
+    Console.WriteLine("------------------------------");
+}

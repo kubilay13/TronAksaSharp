@@ -7,9 +7,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TronAksaSharp", "TronAksaSh
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TronAksaSharpWallet.Test", "TronAksaSharpWallet.Test\TronAksaSharpWallet.Test.csproj", "{37A160C1-67B1-41FE-A174-E7F23157D87A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TronAksaSharpWallet.WalletTest", "TronAksaSharpWallet.WalletTest\TronAksaSharpWallet.WalletTest.csproj", "{BF98F0C8-4347-4DE5-B790-447DBBD8F235}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TronAksaSharpWallet.TransferTest", "TronAksaSharpWallet.TransferTest\TronAksaSharpWallet.TransferTest.csproj", "{FB323ECD-68F9-4771-A875-95FB63110C1C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TronAksaSharpWallet.TronGrid.Test", "TronAksaSharpWallet.TronGrid.Test\TronAksaSharpWallet.TronGrid.Test.csproj", "{DC00B08F-DBDE-4CB0-9776-CF3DF825DF08}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,14 +25,14 @@ Global
 		{37A160C1-67B1-41FE-A174-E7F23157D87A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37A160C1-67B1-41FE-A174-E7F23157D87A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37A160C1-67B1-41FE-A174-E7F23157D87A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BF98F0C8-4347-4DE5-B790-447DBBD8F235}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BF98F0C8-4347-4DE5-B790-447DBBD8F235}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BF98F0C8-4347-4DE5-B790-447DBBD8F235}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BF98F0C8-4347-4DE5-B790-447DBBD8F235}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FB323ECD-68F9-4771-A875-95FB63110C1C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FB323ECD-68F9-4771-A875-95FB63110C1C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB323ECD-68F9-4771-A875-95FB63110C1C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FB323ECD-68F9-4771-A875-95FB63110C1C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC00B08F-DBDE-4CB0-9776-CF3DF825DF08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC00B08F-DBDE-4CB0-9776-CF3DF825DF08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC00B08F-DBDE-4CB0-9776-CF3DF825DF08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC00B08F-DBDE-4CB0-9776-CF3DF825DF08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -51,7 +51,7 @@ namespace TronAksaSharp.Wallet
         {
             byte[] privateKey = Convert.FromHexString(privateKeyHex);
 
-            // 1️⃣ TX oluştur (permission içeride çözülüyor)
+            // TX oluştur (permission içeride çözülüyor)
             var tx = await TronTransferService.CreateTRXTransactionAsync(fromAddress, toAddress, amount, privateKey, network);
 
             string rawHex = tx.RootElement.GetProperty("raw_data_hex").GetString();
