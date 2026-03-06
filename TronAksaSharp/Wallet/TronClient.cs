@@ -12,6 +12,7 @@ namespace TronAksaSharp.Wallet
     public class TronClient
     {
         private readonly TronGridService _tronGridService;
+
         public TronClient(string apiKey, TronNetwork tronNetwork)
         {
             _tronGridService = new TronGridService(apiKey, tronNetwork);
@@ -50,6 +51,8 @@ namespace TronAksaSharp.Wallet
         public static async Task<TransferResult> SendTRXAsync(string fromAddress, string privateKeyHex, string toAddress, decimal amount, TronNetwork network)
         {
             byte[] privateKey = Convert.FromHexString(privateKeyHex);
+
+            long amountInSun = (long)(amount * 1_000_000m);
 
             // TX oluştur (permission içeride çözülüyor)
             var tx = await TronTransferService.CreateTRXTransactionAsync(fromAddress, toAddress, amount, privateKey, network);

@@ -9,7 +9,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TronAksaSharpWallet.Test", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TronAksaSharpWallet.TransferTest", "TronAksaSharpWallet.TransferTest\TronAksaSharpWallet.TransferTest.csproj", "{FB323ECD-68F9-4771-A875-95FB63110C1C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TronAksaSharpWallet.TronGrid.Test", "TronAksaSharpWallet.TronGrid.Test\TronAksaSharpWallet.TronGrid.Test.csproj", "{DC00B08F-DBDE-4CB0-9776-CF3DF825DF08}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TronAksaSharpWallet.TronGridTest", "TronAksaSharpWallet.TronGrid.Test\TronAksaSharpWallet.TronGridTest.csproj", "{DC00B08F-DBDE-4CB0-9776-CF3DF825DF08}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TronAksaSharpWallet.BackgroundWalletServiceTest", "TronAksaSharpWallet.BackgroundWalletServiceTest\TronAksaSharpWallet.BackgroundWalletServiceTest.csproj", "{1262A96F-D12C-4AAF-BD8F-ABBD2EF71CAD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{DC00B08F-DBDE-4CB0-9776-CF3DF825DF08}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DC00B08F-DBDE-4CB0-9776-CF3DF825DF08}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DC00B08F-DBDE-4CB0-9776-CF3DF825DF08}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1262A96F-D12C-4AAF-BD8F-ABBD2EF71CAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1262A96F-D12C-4AAF-BD8F-ABBD2EF71CAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1262A96F-D12C-4AAF-BD8F-ABBD2EF71CAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1262A96F-D12C-4AAF-BD8F-ABBD2EF71CAD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
