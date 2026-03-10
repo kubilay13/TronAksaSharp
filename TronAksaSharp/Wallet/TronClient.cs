@@ -1,5 +1,6 @@
 ﻿using TronAksaSharp.Crypto;
 using TronAksaSharp.Enums;
+using TronAksaSharp.Models;
 using TronAksaSharp.Models.Domain.TronAccount;
 using TronAksaSharp.Models.TronGrid.TronAccount;
 using TronAksaSharp.Models.TronGrid.TronTransaction;
@@ -12,9 +13,10 @@ namespace TronAksaSharp.Wallet
     public class TronClient
     {
         private readonly TronGridService _tronGridService;
-
+        private readonly TronNetwork _network;
         public TronClient(string apiKey, TronNetwork tronNetwork)
         {
+            _network = tronNetwork;
             _tronGridService = new TronGridService(apiKey, tronNetwork);
         }
 
@@ -104,6 +106,29 @@ namespace TronAksaSharp.Wallet
         public Task<List<Trc20Transaction>> GetTronGridTRC20TransactionsDetailsAsync(string address, int? limit = null)
         {
             return _tronGridService.GetTRC20TransactionDetailsAsync(address, limit);
+        }
+
+        // ================= TRON OTOMATİK PARA ÇEKME İŞLEMİ =================
+        public WalletForwardService CreateForwardService(WalletForwardConfig config)
+        {
+            return new WalletForwardService(this, config);
+        }
+
+        // Tek satırda izleme başlat (en basit kullanım)
+        public async Task StartForwardingAsync(string watchAddress, string watchPrivateKey, string forwardAddress, decimal minReserve = 1, int checkIntervalSeconds = 10, CancellationToken cancellationToken = default)
+        {
+            var config = new WalletForwardConfig
+            {
+                WatchAddress = watchAddress,
+                WatchPrivateKey = watchPrivateKey,
+                ForwardAddress = forwardAddress,
+                Network = _network, 
+                MinTRXReserve = minReserve,
+                CheckIntervalSeconds = checkIntervalSeconds
+            };
+
+            var service = new WalletForwardService(this, config);
+            await service.StartAsync(cancellationToken);
         }
     }
 }

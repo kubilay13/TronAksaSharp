@@ -5,7 +5,6 @@ namespace TronAksaSharp.Services
 {
     public class WalletForwardService
     {
-
         private readonly TronClient _tronClient;
         private readonly WalletForwardConfig _config;
         private decimal _lastBalance;

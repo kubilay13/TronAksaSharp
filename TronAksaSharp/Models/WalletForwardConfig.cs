@@ -9,5 +9,6 @@ namespace TronAksaSharp.Models
         public string ForwardAddress { get; set; }
         public TronNetwork Network { get; set; }
         public decimal MinTRXReserve { get; set; } = 1m; // Cüzdanda kalan TRX
+        public int CheckIntervalSeconds { get; set; } = 10; // Kaç saniyede bir kontrol
     }
 }
