@@ -26,7 +26,7 @@ namespace TronAksaSharp.Wallet
             var privateKey = KeyGenerator.GeneratePrivateKey(); // Yeni bir özel anahtar oluşturur
             var publicKey = KeyGenerator.PrivateKeyToPublicKey(privateKey); // Özel anahtardan genel anahtar türetir
             var address = AddressGenerator.PublicKeyToAddress(publicKey); // Genel anahtardan Tron adresi oluşturur
-
+           
             return new Models.Domain.TronAccount.Wallet
             {
                 PrivateKey = privateKey,

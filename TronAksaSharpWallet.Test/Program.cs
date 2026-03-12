@@ -10,11 +10,11 @@ static void Step(string title)
 
 // TRON ADDRESS GENERATE :
 Step("WALLET OLUŞTURMA");
-string ToHex(byte[] data) => BitConverter.ToString(data).Replace("-", "");
+
 var createWallet = TronClient.CreateTronWallet();
 Console.WriteLine($"Cüzdan Adresi :\n {createWallet.Address}");
-Console.WriteLine($"Private Key :\n {ToHex(createWallet.PrivateKey)}");
-Console.WriteLine($"Public Key  :\n {ToHex(createWallet.PublicKey)}");
+Console.WriteLine($"Private Key :\n {createWallet.PrivateKeyHex}"); 
+Console.WriteLine($"Public Key  :\n {createWallet.PublicKeyHex}");
 
 
 //-----------------------------------------------------------------------------
