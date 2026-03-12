@@ -18,15 +18,13 @@ Bu kütüphane ile kolayca **private key → public key → Tron adresi** dönü
 - TRX ve TRC20 Transfer İşlemleri (MainNet,Nile,Shasta) Dahil
 - Cüzdanın stake edilen varlıkların kontrolu (Energy,Bandwidth)
 - İşlemlerin Detaylarını görme
+- Cüzdan Otomasyon Transferleri
 
 ---
 
 ## Yakında Gelecek Özellikler :
 - **Akıllı Kontrat Etkileşimi** - Tron smart contract'ları ile çalışma
-- **TronGrid Api** - TRON ağına node kurmadan erişmeni sağlar
-- **Cüzdan Dinleme**
   
-
 ---
   
 ## Kurulum : 
@@ -44,16 +42,19 @@ string ToHex(byte[] data) => BitConverter.ToString(data).Replace("-", "");
 var createWallet = TronClient.CreateTronWallet();
 
 Console.WriteLine($"Cüzdan Adresi :\n {createWallet.Address}");
-Console.WriteLine($"Private Key :\n {ToHex(createWallet.PrivateKey)}");
-Console.WriteLine($"Public Key  :\n {ToHex(createWallet.PublicKey)}");
+Console.WriteLine($"Private Key :\n {createWallet.PrivateKeyHex}"); 
+Console.WriteLine($"Public Key  :\n {createWallet.PublicKeyHex}");
 
 ```
 
 ## YENİ ADRES OLUŞTURMA KODU ÇIKTI ÖRNEĞİ : 
 ```bash
-Private Key (hex): 03FFEB1D127C5BEF8377F32092F3AD4FEEC93D337553CF5DC8120EC9838147DC
-Public Key (hex) : 046AF87108AD9870550EF651B18D24A551391D66E73BA44DCB45AE7232955FC19D6F6190B58BD3B5D1D96CD127D423B72D70900A972ACD48BD42C35C30098416E8
-Address          : TUqSfg8fT6t4R5zn2Lhe1RtQ6vHmJLeyJt
+Cüzdan Adresi :
+ TLLEyjRhHdg7QJLpDxR9m35DWMfo7Fe2jq
+Private Key :
+ 8fcef3d79e87df12c420f96a6cfae8414c5c35a410d8b12605c6bdad3900373f
+Public Key  :
+ 04cc8ddf9ac9266c1e065267be2e54d82a689da718b6fdbc90901b7c4c031e188b37ed065937ef730200f20cc486d272636c0ed9dc929b066c00e47fac66f47c3b
 ```
 ---
 ## ADRES UZUNLUK HESAPLAMA :
@@ -110,8 +111,8 @@ TRC20 Token Balance: 110430
 ---
 ## TRONGRİD APİ İLE ADRES BİLGİLERİNİ SORGULAMA:
 ```bash
-Step("ÖRNEK ADRES BİLGİLERİNİ TRONGRİD İLE SORGULAMA");
-var service = new TronClient("TRONGRID-KEY", TronNetwork.NileTestNet); // Buraya kendi TronGrid API anahtarınızı yazmalısınız
+tep("ÖRNEK ADRES BİLGİLERİNİ TRONGRİD İLE SORGULAMA");
+var service = new TronClient("", TronNetwork.NileTestNet); // Buraya kendi TronGrid API anahtarınızı yazmalısınız
 var accountdetail = await service.GetTronGridAccountDetailAsync("TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N"); // Buraya sorgulamak istediğiniz TRON adresini yazabilirsiniz
 
 if (accountdetail == null)
@@ -194,9 +195,10 @@ else
 }
 
 Console.WriteLine("====== BİTTİ ======");
+
 ```
 
-##  TRONGRİD APİ İLE ADRES BİLGİLERİNİ SORGULAMA ÇIKTI ÖRNEĞİ :
+##  TRONGRİD APİ İLE ADDRESS BİLGİLERİNİ SORGULAMA ÇIKTI ÖRNEĞİ :
 ```bash
 ════════════ ÖRNEK ADRES BİLGİLERİNİ TRONGRİD İLE SORGULAMA ════════════
 ====== TRON ACCOUNT ======
@@ -246,18 +248,18 @@ Balance (raw): 64014500000
 ====== BİTTİ ======
 ```
 ---
-## TRONGRİD APİ İLE İŞLEM DETAYLARI ÇEKME :
+## TRONGRİD APİ İLE TRX İŞLEM DETAYLARI ÇEKME :
 ```bash
-Step("TRONGRİD İLE İŞLEM DETAYLARI ÇEKME");
+Step("TRONGRİD İLE TRX İŞLEM DETAYLARI ÇEKME");
 
 var txservice = new TronClient(
-    apiKey: "TRONGRID-KEY", // Buraya kendi TronGrid API anahtarınızı yazmalısınız
+    apiKey: "", // Buraya kendi TronGrid API anahtarınızı yazmalısınız
     tronNetwork: TronNetwork.NileTestNet // Buraya sorgulamak istediğiniz TRON ağı (MainNet, NileTestNet, ShastaTestNet)
 );
 
-var txs = await txservice.GetTronGridTransactionDetailsAsync(
+var txs = await txservice.GetTronGridTRXTransactionsDetailsAsync(
     address: "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", // Buraya sorgulamak istediğiniz TRON adresini yazabilirsiniz
-    limit: 200 // Çekmek istediğiniz işlem sayısı (max 200) TRONGRİD SINIRI 
+    limit: 1 // Çekmek istediğiniz işlem sayısı (max 200) TRONGRİD SINIRI 
 );
 
 foreach (var tx in txs)
@@ -270,15 +272,13 @@ foreach (var tx in txs)
     Console.WriteLine($"From: {v.From}");
     Console.WriteLine($"To: {v.To}");
     Console.WriteLine($"Amount: {v.Amount / 1_000_000m} TRX");
-
-    var fee = ((tx.Receipt?.NetFee ?? 0) + (tx.Receipt?.EnergyFee ?? 0)) / 1_000_000m;
-
-    Console.WriteLine($"Fee: {fee} TRX");
+    Console.WriteLine($"Fee: {tx.FeeTRX} TRX");
     Console.WriteLine($"Status: {tx.Result[0].Status}");
     Console.WriteLine("--------------");
 }
+
 ```
-## TRONGRİD APİ İLE İŞLEM DETAYLARI ÇEKME ÇIKTI ÖRNEĞİ :
+## TRONGRİD APİ İLE TRX İŞLEM DETAYLARI ÇEKME ÇIKTI ÖRNEĞİ :
 ```bash
 TX: d30f27b6e43b621ca0d4833dc5758add0eb2e9f843eed6a747d25d68ebb6ca95
 Date : 2026-02-16 05:17:06
@@ -306,6 +306,38 @@ Status: SUCCESS
 --------------
 ```
 ---
+## TRONGRİD APİ İLE TRC-20 İŞLEM DETAYLARI ÇEKME :
+```bash
+var txstrc20 = await txservice.GetTronGridTRC20TransactionsDetailsAsync(
+    address: "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N", // Buraya sorgulamak istediğiniz TRON adresini yazabilirsiniz
+    limit: 1 // Çekmek istediğiniz işlem sayısı (max 200) TRONGRİD SINIRI 
+);
+foreach (var tx in txstrc20)
+{
+    Console.WriteLine($"TXID     : {tx.TransactionId}");
+    Console.WriteLine($"From     : {tx.From}");
+    Console.WriteLine($"To       : {tx.To}");
+    Console.WriteLine($"Amount   : {tx.Amount} {tx.TokenInfo.Symbol}");
+    Console.WriteLine($"Fee      : {tx.Fee} TRX");
+    Console.WriteLine($"Status   : {tx.Status}");
+    Console.WriteLine($"Date     : {tx.Timestamp:yyyy-MM-dd HH:mm:ss}");
+    Console.WriteLine("------------------------------");
+}
+```
+---
+## TRONGRİD APİ İLE TRC-20 İŞLEM DETAYLARI ÇEKME ÇIKTI ÖRNEĞİ :
+```bash
+════════════ TRONGRİD İLE TRC-20 İŞLEM DETAYLARI ÇEKME ════════════
+TXID     : b517eb4427380efa8ef3d04741dd049c216849654ccda2e78db2121abfab5f1d
+From     : TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N
+To       : TGir1bGvZYoWoER3gkHHCSXAFKftQVQpyC
+Amount   : 3 USDC
+Fee      : 0 TRX
+Status   : SUCCESS
+Date     : 2026-03-07 00:58:36
+------------------------------
+```
+---
 ## TRX TRANSFER :
 ```bash
 
@@ -331,8 +363,6 @@ Console.WriteLine("Energy Used : " + txInfo.EnergyUsed);
 Console.WriteLine("Net Fee     : " + txInfo.NetFee);
 Console.WriteLine("-------------------");
 Console.WriteLine("TRX Transferi Başarılı Şekilde Gönderildi.");
-
-
 
 ```
 ## TRX TRANSFER ÇIKTISI ÖRNEĞİ :
@@ -414,6 +444,21 @@ Net Fee      : 345000
 TRC20 Transferi Başarılı Şekilde Gönderildi.
 ```
 ---
+## TRON OTOMATİK TRANSFER :
+```bash
+var client = new TronClient("API_KEY", TronNetwork.NileTestNet);
+
+var watchAddress = "TYkrpvjHfVcuqRei7pDbSiU67CriYHNrvm"; 
+var watchPrivateKey = "b89e495325fe92898d8c6a7f7b18bac99e0c69af447a53bf37092eb0f98d29c7";
+var forwardAddress = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N";
+var network = TronNetwork.NileTestNet;
+var minReserve = 1;
+var checkIntervalSeconds = 10;
+
+
+await client.StartForwardingAsync(watchAddress,watchPrivateKey,forwardAddress,minReserve,checkIntervalSeconds);
+```
+
 
 ## MIT License : 
 ```bash
