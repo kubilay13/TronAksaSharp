@@ -1,4 +1,5 @@
 ﻿using TronAksaSharp.Enums;
+using TronAksaSharp.Services;
 using TronAksaSharp.Wallet;
 
 static void Step(string title)
@@ -145,4 +146,22 @@ foreach (var tx in txstrc20)
     Console.WriteLine($"Status   : {tx.Status}");
     Console.WriteLine($"Date     : {tx.Timestamp:yyyy-MM-dd HH:mm:ss}");
     Console.WriteLine("------------------------------");
+}
+
+
+
+//-----------------------------------------------------------------------------
+//TRONGRİD FEE HESAPLAMA : 
+try
+{
+    var feeParams = await txservice.GetFeeParametersAsync();
+
+    Console.WriteLine("=== FEE PARAMETRELERİ ===");
+    Console.WriteLine($"Transaction Fee: {feeParams.TransactionFee} TRX");
+    Console.WriteLine($"Energy Fee: {feeParams.EnergyFee} TRX");
+    Console.WriteLine("==========================");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Hata: {ex.Message}");
 }

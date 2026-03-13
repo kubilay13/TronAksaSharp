@@ -2,6 +2,7 @@
 using TronAksaSharp.Enums;
 using TronAksaSharp.Models;
 using TronAksaSharp.Models.Domain.TronAccount;
+using TronAksaSharp.Models.TronGrid;
 using TronAksaSharp.Models.TronGrid.TronAccount;
 using TronAksaSharp.Models.TronGrid.TronTransaction;
 using TronAksaSharp.Models.TronTransaction;
@@ -95,7 +96,11 @@ namespace TronAksaSharp.Wallet
         {
             return await _tronGridService.GetAccountAsync(address);
         }
-
+        // ================= TRONGRİD ANLIK FEE PARAMETRESİ =================
+        public async Task<FeeParameters> GetFeeParametersAsync()
+        {
+            return await _tronGridService.GetTRXFeeParametersAsync();
+        }
         // ================= TRONGRİD TRX İŞLEM BİLGİLERİ =================
         public Task<List<TronTransaction>> GetTronGridTRXTransactionsDetailsAsync(string address, int? limit = null)
         {
@@ -113,16 +118,14 @@ namespace TronAksaSharp.Wallet
         {
             return new WalletForwardService(this, config);
         }
-
-        // Tek satırda izleme başlat (en basit kullanım)
-        public async Task StartForwardingAsync(string watchAddress, string watchPrivateKey, string forwardAddress, decimal minReserve = 1, int checkIntervalSeconds = 10, CancellationToken cancellationToken = default)
+        public async Task StartForwardingAsync(string watchAddress, string watchPrivateKey, string forwardAddress, decimal minReserve, int checkIntervalSeconds, CancellationToken cancellationToken = default)
         {
             var config = new WalletForwardConfig
             {
                 WatchAddress = watchAddress,
                 WatchPrivateKey = watchPrivateKey,
                 ForwardAddress = forwardAddress,
-                Network = _network, 
+                Network = _network,
                 MinTRXReserve = minReserve,
                 CheckIntervalSeconds = checkIntervalSeconds
             };

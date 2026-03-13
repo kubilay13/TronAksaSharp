@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
 using TronAksaSharp.Enums;
+using TronAksaSharp.Models.TronGrid;
 using TronAksaSharp.Models.TronGrid.TronAccount;
 using TronAksaSharp.Models.TronGrid.TronTransaction;
 using TronAksaSharp.Networks;
@@ -32,14 +33,14 @@ namespace TronAksaSharp.Services
         }
 
         // Belirtilen TRON adresine ait TRX işlemleri döner (limit parametresi ile sonuç sayısı sınırlandırılabilir TRONGRİD MAX SINIR 200 SONRA HATA DÖNER APİKEY BAN YİYEBİLİRSİNİZ.)
-        public async Task<List<TronTransaction>>GetTRXTransactiondDetailsAsync(string address, int? limit = null)
+        public async Task<List<TronTransaction>> GetTRXTransactiondDetailsAsync(string address, int? limit = null)
         {
             var url = $"/v1/accounts/{address}/transactions";
 
             if (limit.HasValue)
             {
                 url += $"?limit={limit.Value}";
-            }         
+            }
 
             var res = await _httpClient.GetAsync(url);
             res.EnsureSuccessStatusCode();
@@ -127,6 +128,45 @@ namespace TronAksaSharp.Services
             }
 
             return txList;
+        }
+
+        // TRON ağının anlık fee bilgilerini alır
+        public async Task<FeeParameters> GetTRXFeeParametersAsync()
+        {
+            var response = await _httpClient.GetAsync("/wallet/getchainparameters");
+            response.EnsureSuccessStatusCode();
+            var json = await response.Content.ReadAsStringAsync();
+            using var doc = JsonDocument.Parse(json);
+            var feeParams = new FeeParameters();
+            if (doc.RootElement.TryGetProperty("chainParameter", out var parameters))
+            {
+                foreach (var param in parameters.EnumerateArray())
+                {
+                    if (param.TryGetProperty("key", out var key) &&
+                        param.TryGetProperty("value", out var value))
+                    {
+                        string keyStr = key.GetString();
+                        long valueLong = value.GetInt64();
+                        decimal valueTrx = valueLong / 1_000_000m; // SUN -> TRX
+
+                        if (keyStr == "getTransactionFee")
+                        {
+                            feeParams.TransactionFee = valueTrx;
+                        }
+                        else if (keyStr == "getEnergyFee")
+                        {
+                            feeParams.EnergyFee = valueTrx;
+                        }
+                    }
+                }
+            }
+            if (feeParams.TransactionFee == 0)
+                feeParams.TransactionFee = 0.001m; // 1000 SUN
+
+            if (feeParams.EnergyFee == 0)
+                feeParams.EnergyFee = 0.00004m; // 40 SUN
+
+            return feeParams;
         }
     }
 }

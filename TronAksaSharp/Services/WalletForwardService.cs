@@ -17,19 +17,33 @@ namespace TronAksaSharp.Services
         }
         public async Task StartAsync(CancellationToken cancellationToken)
         {
+            // Başlangıç bakiyesini al
             _lastBalance = await BalanceService.GetTRXBalanceAsync(_config.WatchAddress, _config.Network);
+            Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] Başlangıç bakiyesi: {_lastBalance} TRX");
+
+            // İlk kontrol (zaten para varsa onu da gönder)
             await ForwardIfNeededAsync(_lastBalance);
+
             while (!cancellationToken.IsCancellationRequested)
             {
                 try
                 {
+                    // Güncel bakiyeyi al
                     decimal currentBalance = await BalanceService.GetTRXBalanceAsync(_config.WatchAddress, _config.Network);
 
+                    // Yeni para geldiyse
                     if (currentBalance > _lastBalance)
                     {
+                        decimal gelenMiktar = currentBalance - _lastBalance;
+                        Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] 💰 {gelenMiktar} TRX geldi!");
+
+                        // Gönderilecek miktar = tüm bakiye - reserve
                         decimal amountToForward = currentBalance - _config.MinTRXReserve;
+
                         if (amountToForward > 0)
                         {
+                            Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] 📤 {amountToForward} TRX gönderiliyor...");
+
                             var result = await TronClient.SendTRXAsync(
                                 _config.WatchAddress,
                                 _config.WatchPrivateKey,
@@ -38,27 +52,34 @@ namespace TronAksaSharp.Services
                                 _config.Network
                             );
 
-                            Console.WriteLine($"Forwarded {amountToForward} TRX. TxID: {result.TxId}");
+                            if (result.Success)
+                                Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] ✅ Gönderildi! TxID: {result.TxId}");
+                            else
+                                Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] ❌ Hata: {result.Error}");
                         }
                     }
 
+                    // Son bakiyeyi güncelle
                     _lastBalance = currentBalance;
-                    await Task.Delay(5000, cancellationToken); // 5 saniye bekle
+
+                    // Config'deki süre kadar bekle
+                    await Task.Delay(_config.CheckIntervalSeconds * 1000, cancellationToken);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Error: {ex.Message}");
-                    await Task.Delay(5000, cancellationToken); //hata durumunda 5 saniye bekler
+                    Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] ❌ Hata: {ex.Message}");
+                    await Task.Delay(5000, cancellationToken);
                 }
             }
         }
-
         private async Task ForwardIfNeededAsync(decimal currentBalance)
         {
             decimal amountToForward = currentBalance - _config.MinTRXReserve;
 
             if (amountToForward > 0)
             {
+                Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] 📤 İlk transfer: {amountToForward} TRX");
+
                 var result = await TronClient.SendTRXAsync(
                     _config.WatchAddress,
                     _config.WatchPrivateKey,
@@ -67,7 +88,10 @@ namespace TronAksaSharp.Services
                     _config.Network
                 );
 
-                Console.WriteLine($"Forwarded {amountToForward} TRX. TxID: {result.TxId}");
+                if (result.Success)
+                    Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] ✅ İlk transfer tamam! TxID: {result.TxId}");
+                else
+                    Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] ❌ İlk transfer hatası: {result.Error}");
             }
         }
     }
