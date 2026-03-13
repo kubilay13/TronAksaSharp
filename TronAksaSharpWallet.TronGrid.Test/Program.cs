@@ -163,5 +163,5 @@ try
 }
 catch (Exception ex)
 {
-    Console.WriteLine($"Hata: {ex.Message}");
+    Console.WriteLine($"Hata: {ex.Message}") ;
 }
