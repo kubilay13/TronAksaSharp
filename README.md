@@ -26,19 +26,11 @@ Bu kütüphane ile kolayca **private key → public key → Tron adresi** dönü
 - **Akıllı Kontrat Etkileşimi** - Tron smart contract'ları ile çalışma
   
 ---
-  
-## Kurulum : 
-
-1. Projenize `TronAksaSharp` kütüphanesini ekleyin.
-   NuGet : https://www.nuget.org/packages/TronAksaSharp
----
 NOT: Base58 işlemleri artık kütüphane içinde, SimpleBase bağımlılığı kaldırıldı.
 ---
 
 ## YENİ ADRES OLUŞTURMA KODU : 
 ```bash
-
-string ToHex(byte[] data) => BitConverter.ToString(data).Replace("-", "");
 var createWallet = TronClient.CreateTronWallet();
 
 Console.WriteLine($"Cüzdan Adresi :\n {createWallet.Address}");
