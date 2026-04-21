@@ -39,6 +39,27 @@ namespace TronAksaSharp.Services
 
                         // Gönderilecek miktar = tüm bakiye - reserve
                         decimal amountToForward = currentBalance - _config.MinTRXReserve;
+                        decimal maxAmountToForward = _config.MaxTRXReserve;
+                        if(maxAmountToForward > 0 || maxAmountToForward!=null)
+                        {
+                            Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] 📤 {maxAmountToForward} TRX gönderiliyor...");
+                            var result = await TronClient.SendTRXAsync(
+                                _config.WatchAddress,
+                                _config.WatchPrivateKey,
+                                _config.ForwardAddress,
+                                maxAmountToForward,
+                                _config.Network
+                            );
+
+                            if (result.Success)
+                            {
+                                Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] ✅ Gönderildi! TxID: {result.TxId}");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] ❌ Hata: {result.Error}");
+                            }
+                        }
 
                         if (amountToForward > 0)
                         {
@@ -53,9 +74,13 @@ namespace TronAksaSharp.Services
                             );
 
                             if (result.Success)
+                            {
                                 Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] ✅ Gönderildi! TxID: {result.TxId}");
+                            }
                             else
+                            {
                                 Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] ❌ Hata: {result.Error}");
+                            }
                         }
                     }
 
@@ -75,6 +100,28 @@ namespace TronAksaSharp.Services
         private async Task ForwardIfNeededAsync(decimal currentBalance)
         {
             decimal amountToForward = currentBalance - _config.MinTRXReserve;
+            decimal maxAmountToForward = _config.MaxTRXReserve;
+
+            if (maxAmountToForward > 0 || maxAmountToForward != null)
+            {
+                Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] 📤 {maxAmountToForward} TRX gönderiliyor...");
+                var result = await TronClient.SendTRXAsync(
+                    _config.WatchAddress,
+                    _config.WatchPrivateKey,
+                    _config.ForwardAddress,
+                    maxAmountToForward,
+                    _config.Network
+                );
+
+                if (result.Success)
+                {
+                    Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] ✅ Gönderildi! TxID: {result.TxId}");
+                }
+                else
+                {
+                    Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] ❌ Hata: {result.Error}");
+                }
+            }
 
             if (amountToForward > 0)
             {
@@ -83,7 +130,7 @@ namespace TronAksaSharp.Services
                 var result = await TronClient.SendTRXAsync(
                     _config.WatchAddress,
                     _config.WatchPrivateKey,
-                    _config.ForwardAddress,
+                    _config.ForwardAddress,-
                     amountToForward,
                     _config.Network
                 );

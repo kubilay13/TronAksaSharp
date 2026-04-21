@@ -1,7 +1,7 @@
 ﻿using TronAksaSharp.Enums;
 using TronAksaSharp.Wallet;
 
-namespace TronAksaSharp.Services
+namespace TronAksaSharp.Services.Calculators
 {
     public class TronFeeCalculatorService
     {

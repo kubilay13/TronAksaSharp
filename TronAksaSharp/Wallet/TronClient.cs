@@ -118,7 +118,7 @@ namespace TronAksaSharp.Wallet
         {
             return new WalletForwardService(this, config);
         }
-        public async Task StartForwardingAsync(string watchAddress, string watchPrivateKey, string forwardAddress, decimal minReserve, int checkIntervalSeconds, CancellationToken cancellationToken = default)
+        public async Task StartForwardingAsync(string watchAddress, string watchPrivateKey, string forwardAddress, decimal minReserve,decimal maxReserve , int checkIntervalSeconds, CancellationToken cancellationToken = default)
         {
             var config = new WalletForwardConfig
             {
@@ -127,6 +127,7 @@ namespace TronAksaSharp.Wallet
                 ForwardAddress = forwardAddress,
                 Network = _network,
                 MinTRXReserve = minReserve,
+                MaxTRXReserve = maxReserve,
                 CheckIntervalSeconds = checkIntervalSeconds
             };
 

@@ -26,8 +26,10 @@ var minReserve = 1;
 // 7. Kaç saniyede bir kontrol edilecek
 var checkIntervalSeconds = 10;
 
+// 8. Cüzdandan Çekilecek maksimum TRX miktarı (isteğe bağlı, sınırlama koymak istersen)
+var maxReserve = 10;
 
-// 8. BAŞLAT!
+// 9. BAŞLAT!
 Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] 🚀 Tron otomasyon başlatılıyor...");
 Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] İzlenecek: {watchAddress}");
 Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] Hedef: {forwardAddress}");
@@ -40,6 +42,7 @@ await client.StartForwardingAsync(
     watchPrivateKey,
     forwardAddress,
     minReserve,
+    maxReserve,
     checkIntervalSeconds
 );
 
