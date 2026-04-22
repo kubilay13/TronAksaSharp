@@ -52,8 +52,8 @@ Public Key  :
 ## ADRES UZUNLUK HESAPLAMA :
 ```bash
 
-byte[] addrBytes = Base58.Decode($"{createWallet.Address}");
-Console.WriteLine("Adres byte uzunluğu = " + addrBytes.Length);
+int byteLength = TronClient.GetAddressByteLength(createWallet.Address);
+Console.WriteLine("Adres byte uzunluğu = " + byteLength);
 
 ```
 ## ADRES UZUNLUK HESAPLAMA ÇIKTI ÖRNEĞİ :
