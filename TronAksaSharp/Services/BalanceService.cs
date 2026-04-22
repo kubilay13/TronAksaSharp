@@ -65,7 +65,7 @@ namespace TronAksaSharp.Services
             return (decimal)bigInt / (decimal)Math.Pow(10, tokenDecimals);
         }
         // Bandwidth için stake edilmiş TRX miktarını döner
-        public static async Task<decimal> GetBandwidthStakeAsync(string address, TronNetwork tronNetwork)
+        public static async Task<decimal> GetStakedTRXForBandwidthAsync(string address, TronNetwork tronNetwork)
         {
             if (string.IsNullOrWhiteSpace(address))
                 throw new ArgumentException("Adres boş olamaz");
@@ -99,7 +99,7 @@ namespace TronAksaSharp.Services
             return bandwidthStake / 1_000_000m;
         }
         // Energy için stake edilmiş TRX miktarını döner
-        public static async Task<decimal> GetEnergyStakeAsync(string address, TronNetwork tronNetwork)
+        public static async Task<decimal> GetStakedEnergyForTRXAsync(string address, TronNetwork tronNetwork)
         {
             if (string.IsNullOrWhiteSpace(address))
                 throw new ArgumentException("Adres boş olamaz");
@@ -143,6 +143,52 @@ namespace TronAksaSharp.Services
                 }
             }
             return energyStake / 1_000_000m;
+        }
+
+        public static async Task<long> GetBandwidthAsync(string address, TronNetwork tronNetwork)
+        {
+            if (string.IsNullOrWhiteSpace(address))
+                throw new ArgumentException("Adres boş olamaz");
+
+            string baseUrl = TronEndpoints.GetBaseUrl(tronNetwork);
+
+            using var client = new HttpClient();
+            var json = await client.GetStringAsync($"{baseUrl}/v1/accounts/{address}");
+            using var doc = JsonDocument.Parse(json);
+
+            if (!doc.RootElement.TryGetProperty("data", out var data) || data.GetArrayLength() == 0)
+                return 0;
+
+            var acc = data[0];
+
+            // net_window_size alanını kontrol et
+            if (acc.TryGetProperty("net_window_size", out var netWindow) && netWindow.ValueKind == JsonValueKind.Number)
+                return netWindow.GetInt64();
+
+            return 0;
+        }
+
+        public static async Task<long> GetEnergyAsync(string address, TronNetwork tronNetwork)
+        {
+            if (string.IsNullOrWhiteSpace(address))
+                throw new ArgumentException("Adres boş olamaz");
+
+            string baseUrl = TronEndpoints.GetBaseUrl(tronNetwork);
+
+            using var client = new HttpClient();
+            var json = await client.GetStringAsync($"{baseUrl}/v1/accounts/{address}");
+            using var doc = JsonDocument.Parse(json);
+
+            if (!doc.RootElement.TryGetProperty("data", out var data) || data.GetArrayLength() == 0)
+                return 0;
+
+            var acc = data[0];
+
+            // energy_window_size alanını kontrol et
+            if (acc.TryGetProperty("energy_window_size", out var energyWindow) && energyWindow.ValueKind == JsonValueKind.Number)
+                return energyWindow.GetInt64();
+
+            return 0;
         }
     }
 }

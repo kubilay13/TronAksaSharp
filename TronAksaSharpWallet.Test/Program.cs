@@ -1,4 +1,5 @@
 ﻿using TronAksaSharp.Enums;
+using TronAksaSharp.Networks;
 using TronAksaSharp.Wallet;
 
 static void Step(string title)
@@ -31,9 +32,11 @@ string walletAddress = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N"; // Örnek TRON adre
 
 var balances = await TronClient.GetBalancesAsync(walletAddress, TronNetwork.NileTestNet);
 
-Console.WriteLine($"TRX       : {balances.TrxBalance}");
-Console.WriteLine($"Bandwidth : {balances.BandwidthStake}");
-Console.WriteLine($"Energy    : {balances.EnergyStake}");
+Console.WriteLine($"TRX Miktarı : {balances.TrxBalance}");
+Console.WriteLine($"Energy Miktarı: {balances.EnergyStake}");
+Console.WriteLine($"Bandwidth Miktarı: {balances.BandwidthStake}");
+Console.WriteLine($"Energy İçin Stake Edilen TRX  Miktarı: {balances.EnergyForTRXStake}");
+Console.WriteLine($"Bandwidth İçim Stake Edilen TRX Miktarı : {balances.BandwidthForTRXStake}");
 
 
 
@@ -50,8 +53,6 @@ decimal usdtBalance = await TronClient.GetTRC20BalanceAsync(
 );
 
 Console.WriteLine($"USDT Balance: {usdtBalance}");
-
-
 
 
 

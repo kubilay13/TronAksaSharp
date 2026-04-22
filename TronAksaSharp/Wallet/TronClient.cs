@@ -46,8 +46,10 @@ namespace TronAksaSharp.Wallet
             return new TronBalanceInfo
             {
                 TrxBalance = await BalanceService.GetTRXBalanceAsync(address, network),
-                BandwidthStake = await BalanceService.GetBandwidthStakeAsync(address, network),
-                EnergyStake = await BalanceService.GetEnergyStakeAsync(address, network)
+                BandwidthForTRXStake = await BalanceService.GetStakedTRXForBandwidthAsync(address, network), // bandwith için stake edilmiş trx miktarını çeker.
+                EnergyForTRXStake = await BalanceService.GetStakedEnergyForTRXAsync(address, network), // energy için stake edilmiş trx miktarını çeker.
+                BandwidthStake = await BalanceService.GetBandwidthAsync(address, network), // bandwith için stake edilmiş trx miktarını çeker.
+                EnergyStake = await BalanceService.GetEnergyAsync(address, network) // energy için stake edilmiş trx miktarını çeker.
             };
         }
 
