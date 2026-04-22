@@ -1,5 +1,4 @@
-﻿using TronAksaSharp.Endcoding;
-using TronAksaSharp.Enums;
+﻿using TronAksaSharp.Enums;
 using TronAksaSharp.Wallet;
 
 static void Step(string title)
@@ -21,8 +20,8 @@ Console.WriteLine($"Public Key  :\n {createWallet.PublicKeyHex}");
 
 // ADDRESS BYTE UZUNLUĞU SORGULAMA :
 Step("ADRES BYTE UZUNLUK SORGULAMA");
-byte[] addrBytes = Base58.Decode($"{createWallet.Address}");
-Console.WriteLine("Adres byte uzunluğu = " + addrBytes.Length);
+int byteLength = TronClient.GetAddressByteLength(createWallet.Address);
+Console.WriteLine("Adres byte uzunluğu = " + byteLength);
 
 
 //-----------------------------------------------------------------------------

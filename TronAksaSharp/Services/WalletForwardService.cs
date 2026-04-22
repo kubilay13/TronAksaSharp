@@ -40,7 +40,7 @@ namespace TronAksaSharp.Services
                         // Gönderilecek miktar = tüm bakiye - reserve
                         decimal amountToForward = currentBalance - _config.MinTRXReserve;
                         decimal maxAmountToForward = _config.MaxTRXReserve;
-                        if(maxAmountToForward > 0 || maxAmountToForward!=null)
+                        if (maxAmountToForward > 0 || maxAmountToForward != null)
                         {
                             Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] 📤 {maxAmountToForward} TRX gönderiliyor...");
                             var result = await TronClient.SendTRXAsync(
@@ -130,7 +130,7 @@ namespace TronAksaSharp.Services
                 var result = await TronClient.SendTRXAsync(
                     _config.WatchAddress,
                     _config.WatchPrivateKey,
-                    _config.ForwardAddress,-
+                    _config.ForwardAddress, -
                     amountToForward,
                     _config.Network
                 );

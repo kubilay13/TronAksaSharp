@@ -9,6 +9,7 @@ namespace TronAksaSharp.Services
 {
     public class BalanceService
     {
+
         // TRX BAKİYESİNİ SORGULAR
         public static async Task<decimal> GetTRXBalanceAsync(string address ,TronNetwork tronNetwork)
         { 
