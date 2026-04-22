@@ -1,5 +1,6 @@
 ﻿using TronAksaSharp.Enums;
 using TronAksaSharp.Services;
+using TronAksaSharp.Services.Calculators;
 using TronAksaSharp.Wallet;
 
 static void Step(string title)
@@ -73,3 +74,12 @@ Console.WriteLine($"To         : {trc20TxInfo.To}");
 Console.WriteLine($"Amount     : {trc20TxInfo.Amount} USDT");
 Console.WriteLine($"Result     : {trc20TxInfo.Result}");
 Console.WriteLine("TRC20 Transferi Başarılı!");
+
+
+
+Console.WriteLine("----- Fee Sorgulama -----");
+decimal fee = await TronFeeCalculatorService.CalculateTRXFeeAsync(
+    TronNetwork.NileTestNet,
+    "your-api-key"  // opsiyonel
+);
+Console.WriteLine($"TRX Ağı Standart Ücret Sorgu Fee: {fee}");

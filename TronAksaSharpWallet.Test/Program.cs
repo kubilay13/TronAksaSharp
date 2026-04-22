@@ -1,5 +1,5 @@
 ﻿using TronAksaSharp.Enums;
-using TronAksaSharp.Networks;
+using TronAksaSharp.Services.Calculators;
 using TronAksaSharp.Wallet;
 
 static void Step(string title)
@@ -37,7 +37,6 @@ Console.WriteLine($"Energy Miktarı: {balances.EnergyStake}");
 Console.WriteLine($"Bandwidth Miktarı: {balances.BandwidthStake}");
 Console.WriteLine($"Energy İçin Stake Edilen TRX  Miktarı: {balances.EnergyForTRXStake}");
 Console.WriteLine($"Bandwidth İçim Stake Edilen TRX Miktarı : {balances.BandwidthForTRXStake}");
-
 
 
 //-----------------------------------------------------------------------------
