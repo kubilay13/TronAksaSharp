@@ -1,4 +1,5 @@
-﻿using TronAksaSharp.Crypto;
+﻿using TronAksaSharp.Abstractions;
+using TronAksaSharp.Crypto;
 using TronAksaSharp.Enums;
 using TronAksaSharp.Models;
 using TronAksaSharp.Models.Domain.TronAccount;
@@ -14,9 +15,13 @@ namespace TronAksaSharp.Wallet
     public class TronClient
     {
         private readonly TronGridService _tronGridService;
+        private readonly ITronAccountService _tronAccountService;
+        private readonly ITronTransferService _tronTransferService;
         private readonly TronNetwork _network;
-        public TronClient(string apiKey, TronNetwork tronNetwork)
+        public TronClient(ITronAccountService tronAccountService, ITronTransferService tronTransferService, TronNetwork tronNetwork, string apiKey = "")
         {
+            _tronAccountService = tronAccountService;
+            _tronTransferService = tronTransferService;
             _network = tronNetwork;
             _tronGridService = new TronGridService(apiKey, tronNetwork);
         }
@@ -51,28 +56,28 @@ namespace TronAksaSharp.Wallet
             return await BalanceService.GetTRC20BalanceAsync(walletAddress, contractAddress, decimals, network);
         }
         // ================= TRX =================
-        public static async Task<TransferResult> SendTRXAsync(string fromAddress, string privateKeyHex, string toAddress, decimal amount, TronNetwork network)
+        public async Task<TransferResult> SendTRXAsync(string fromAddress, string privateKeyHex, string toAddress, decimal amount)
         {
             byte[] privateKey = Convert.FromHexString(privateKeyHex);
 
             long amountInSun = (long)(amount * 1_000_000m);
 
             // TX oluştur (permission içeride çözülüyor)
-            var tx = await TronTransferService.CreateTRXTransactionAsync(fromAddress, toAddress, amount, privateKey, network);
+            var tx = await _tronTransferService.CreateTRXTransactionAsync(fromAddress, toAddress, amount, privateKey);
 
             string rawHex = tx.RootElement.GetProperty("raw_data_hex").GetString();
 
             string signature = TronTransactionSigner.Sign(rawHex, privateKey, fromAddress);
 
-            return await TronTransferService.BroadcastAsync(tx.RootElement, signature, network);
+            return await _tronTransferService.BroadcastAsync(tx.RootElement, signature);
         }
 
         // ================= TRC20 =================
-        public static async Task<TransferResult> SendTRC20Async(string from, string privateKeyHex, string to, string contract, decimal amount, int decimals, TronNetwork network)
+        public async Task<TransferResult> SendTRC20Async(string from, string privateKeyHex, string to, string contract, decimal amount, int decimals)
         {
             byte[] pk = Convert.FromHexString(privateKeyHex);
 
-            var accountDoc = await TronAccountService.GetAccountAsync(from, network);
+            var accountDoc = await _tronAccountService.GetAccountAsync(from, _network);
 
             int permId = TronAccountPermissionResolver.ResolvePermissionId(accountDoc, from);
 
@@ -80,7 +85,7 @@ namespace TronAksaSharp.Wallet
             Console.WriteLine($"SIGNER  = {from}");
             Console.WriteLine($"PERM_ID = {permId}");
 
-            var txDoc = await TronTransferService.CreateTRC20TransactionAsync(from, to, contract, amount, decimals, permId, network);
+            var txDoc = await _tronTransferService.CreateTRC20TransactionAsync(from, to, contract, amount, decimals, permId);
 
             var tx = txDoc.RootElement.GetProperty("transaction");
 
@@ -88,7 +93,7 @@ namespace TronAksaSharp.Wallet
 
             string signature = TronTransactionSigner.Sign(rawHex, pk, from);
 
-            return await TronTransferService.BroadcastAsync(tx, signature, network);
+            return await _tronTransferService.BroadcastAsync(tx, signature);
         }
 
         // ================= TRONGRİD CÜZDAN BİLGİLERİ =================
