@@ -1,5 +1,6 @@
-﻿using TronAksaSharp.Enums;
-using TronAksaSharp.Services.Calculators;
+﻿using System.Text.Json;
+using TronAksaSharp.Enums;
+using TronAksaSharp.Networks;
 using TronAksaSharp.Wallet;
 
 static void Step(string title)
@@ -55,4 +56,44 @@ Console.WriteLine($"USDT Balance: {usdtBalance}");
 
 
 
+string baseUrl = TronEndpoints.GetBaseUrl(TronNetwork.NileTestNet);
 
+using var client = new HttpClient();
+var json = await client.GetStringAsync($"{baseUrl}/v1/accounts/{walletAddress}");
+using var doc = JsonDocument.Parse(json);
+
+if (!doc.RootElement.TryGetProperty("data", out var data) || data.GetArrayLength() == 0)
+{
+    Console.WriteLine("Veri yok");
+    return;
+}
+
+var acc = data[0];
+
+Console.WriteLine("=== TÜM SAYISAL ALANLAR ===");
+foreach (var prop in acc.EnumerateObject())
+{
+    if (prop.Value.ValueKind == JsonValueKind.Number)
+    {
+        Console.WriteLine($"{prop.Name}: {prop.Value.GetInt64()}");
+    }
+}
+
+// account_resource içindekiler
+if (acc.TryGetProperty("account_resource", out var res) && res.ValueKind == JsonValueKind.Object)
+{
+    Console.WriteLine("\n=== account_resource İÇİNDEKİLER ===");
+    foreach (var prop in res.EnumerateObject())
+    {
+        if (prop.Value.ValueKind == JsonValueKind.Number)
+        {
+            Console.WriteLine($"{prop.Name}: {prop.Value.GetInt64()}");
+        }
+    }
+}
+
+decimal usdPrice = await TronClient.GetTRXPriceUSDAsync();
+decimal tryPrice = await TronClient.GetTRXPriceTRYAsync();
+
+Console.WriteLine($"TRX Fiyatı: ${usdPrice} USD");
+Console.WriteLine($"TRX Fiyatı: {tryPrice} TL");

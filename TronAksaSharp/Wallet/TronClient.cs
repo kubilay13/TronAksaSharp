@@ -43,6 +43,7 @@ namespace TronAksaSharp.Wallet
         // ================= BALANCE-STAKE =================
         public static async Task<TronBalanceInfo> GetBalancesAsync(string address, TronNetwork network)
         {
+
             return new TronBalanceInfo
             {
                 TrxBalance = await BalanceService.GetTRXBalanceAsync(address, network),
@@ -138,6 +139,17 @@ namespace TronAksaSharp.Wallet
             var tronClient = new TronClient();  // TronClient örneği oluştur
             var service = new WalletForwardService(tronClient, config);  // 2 parametre
             await service.StartAsync(cancellationToken);
+        }
+
+        // ================= TRON ANLIK FİYAT =================
+        public static async Task<decimal> GetTRXPriceUSDAsync()
+        {
+            return await BinancePriceService.GetTRXPriceUSDAsync();
+        }
+
+        public static async Task<decimal> GetTRXPriceTRYAsync()
+        {
+            return await BinancePriceService.GetTRXPriceTRYAsync();
         }
     }
 }
