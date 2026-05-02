@@ -5,8 +5,13 @@
 
 # TronAksaSharp
 
-**TronAksaSharp**: C# ile yazılmış, Tron ağı için yerli ve açık kaynaklı bir cüzdan & adres üretme  kütüphanesidir.  
-Bu kütüphane ile kolayca **private key → public key → Tron adresi** dönüşümü yapabilirsiniz.
+**TronAksaSharp**,  C# ile yazılmış, Tron blok zinciri üzerinde çalışan uygulamalar için kapsamlı bir cüzdan kütüphanesidir. Bu kütüphane ile sıfırdan Tron cüzdanı oluşturabilir, private key'den public key'e ve oradan da Base58Check formatında Tron adresine dönüşüm yapabilirsiniz. Oluşturduğunuz adresin byte uzunluğunu doğrulayabilirsiniz.
+
+Kütüphane, hem Manuel RPC hem de TronGrid API desteği sunar. Manuel RPC ile TRX bakiyesi, TRC-20 token bakiyeleri (USDT, USDC vb.), stake edilen Energy ve Bandwidth miktarlarını ücretsiz olarak sorgulayabilirsiniz. TRX ve TRC-20 transferleri gönderebilir, transfer sonrası ManualTransactionInfoService.WaitForTransactionAsync() metodu ile işlemin blok zincirine dahil olmasını bekleyip block number, fee, energy used, net fee gibi detayları alabilirsiniz.
+
+TronGrid API sayesinde bir adresin tüm detaylarına tek seferde ulaşabilirsiniz: TRX bakiyesi, frozen edilmiş varlıklar (Energy, Bandwidth, TRON Power), owner/active permission'lar, SR oyları ve cüzdandaki tüm TRC-20 token'ların raw balance'ları. Ayrıca TronGrid ile TRX ve TRC-20 işlem geçmişini çekebilir, her işlemin gönderen/alıcı, miktar, fee, durum ve tarih bilgilerini alabilirsiniz (limit 200 işlem).
+
+Ek olarak, cüzdan otomasyon transferi (forwarding) yapabilir **(Hala tamamlanmadı)**, Binance API üzerinden anlık TRX fiyatını USD ve TL olarak çekebilirsiniz. Kütüphane MainNet, Nile TestNet ve Shasta TestNet ağlarını destekler, hiçbir harici Base58 bağımlılığı (SimpleBase kaldırıldı) içermez ve tamamen kendi Base58 implementasyonu ile çalışır. Yakında akıllı kontrat etkileşimi özelliği de eklenecektir.
 
 ---
 ## Özellikler:
@@ -18,12 +23,13 @@ Bu kütüphane ile kolayca **private key → public key → Tron adresi** dönü
 - TRX ve TRC20 Transfer İşlemleri (MainNet,Nile,Shasta) Dahil
 - Cüzdanın stake edilen varlıkların kontrolu (Energy,Bandwidth)
 - İşlemlerin Detaylarını görme
-- Cüzdan Otomasyon Transferleri
+- Fiyat Bilgisi
 
 ---
 
 ## Yakında Gelecek Özellikler :
 - **Akıllı Kontrat Etkileşimi** - Tron smart contract'ları ile çalışma
+-  Cüzdan Otomasyon Transferleri
   
 ---
 NOT: Base58 işlemleri artık kütüphane içinde, SimpleBase bağımlılığı kaldırıldı.
@@ -72,17 +78,21 @@ string walletAddress = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N"; // Örnek TRON adre
 
 var balances = await TronClient.GetBalancesAsync(walletAddress, TronNetwork.NileTestNet);
 
-Console.WriteLine($"TRX       : {balances.TrxBalance}");
-Console.WriteLine($"Bandwidth : {balances.BandwidthStake}");
-Console.WriteLine($"Energy    : {balances.EnergyStake}");
+Console.WriteLine($"TRX Miktarı : {balances.TrxBalance}");
+Console.WriteLine($"Energy Miktarı: {balances.EnergyStake}");
+Console.WriteLine($"Bandwidth Miktarı: {balances.BandwidthStake}");
+Console.WriteLine($"Energy İçin Stake Edilen TRX  Miktarı: {balances.EnergyForTRXStake}");
+Console.WriteLine($"Bandwidth İçim Stake Edilen TRX Miktarı : {balances.BandwidthForTRXStake}");
 
 
 ```
-### Örnek Çıktı : 
+## TRX BAKİYE-STAKE(ENERGY,BANDWİTH) SORGULAMA Örnek Çıktı : 
 ```bash
-TRX       : 761295,371631
-Bandwidth : 24938
-Energy    : 100000
+TRX Miktarı : 488973,245796
+Energy Miktarı: 0
+Bandwidth Miktarı: 28800000
+Energy İçin Stake Edilen TRX  Miktarı: 568820
+Bandwidth İçim Stake Edilen TRX Miktarı : 29938
 ```
 ---
 ## TRC20 TOKEN BAKİYE SORGULAMA :
@@ -95,10 +105,26 @@ decimal usdtBalance = await TronClient.GetTRC20BalanceAsync(
     6, // USDT decimals
     TronNetwork.NileTestNet
 );
+Console.WriteLine($"USDT Balance: {usdtBalance}");
 ```
-### Örnek Çıktı : 
+## TRC20 TOKEN BAKİYE SORGULAMA Örnek Çıktı : 
 ```bash
 TRC20 Token Balance: 110430
+```
+## Fiyat Bilgisi Sorgulama TL ,USD:
+```bash
+decimal usdPrice = await TronClient.GetTRXPriceUSDAsync();
+decimal tryPrice = await TronClient.GetTRXPriceTRYAsync();
+
+Step("TRX FİYAT BİLGİLERİ");
+Console.WriteLine($"TRX Fiyatı USD: ${usdPrice} USD");
+Console.WriteLine($"TRX Fiyatı TRY: {tryPrice} TL");
+```
+## Fiyat Bilgisi Sorgulama TL ,USD Örnek Çıktı : 
+```bash
+════════════ TRX FİYAT BİLGİLERİ ════════════
+TRX Fiyatı USD: $0,331325 USD
+TRX Fiyatı TRY: 14,96 TL
 ```
 ---
 ## TRONGRİD APİ İLE ADRES BİLGİLERİNİ SORGULAMA:
@@ -435,22 +461,6 @@ Net Fee      : 345000
 --------------------------
 TRC20 Transferi Başarılı Şekilde Gönderildi.
 ```
----
-## TRON OTOMATİK TRANSFER :
-```bash
-var client = new TronClient("API_KEY", TronNetwork.NileTestNet);
-
-var watchAddress = "TYkrpvjHfVcuqRei7pDbSiU67CriYHNrvm"; 
-var watchPrivateKey = "b89e495325fe92898d8c6a7f7b18bac99e0c69af447a53bf37092eb0f98d29c7";
-var forwardAddress = "TEWJWLwFL3dbMjXtj2smNfto9sXdWquF4N";
-var network = TronNetwork.NileTestNet;
-var minReserve = 1;
-var checkIntervalSeconds = 10;
-
-
-await client.StartForwardingAsync(watchAddress,watchPrivateKey,forwardAddress,minReserve,checkIntervalSeconds);
-```
-
 
 ## MIT License : 
 ```bash
