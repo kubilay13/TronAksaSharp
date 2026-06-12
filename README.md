@@ -33,12 +33,10 @@ Ek olarak, cüzdan otomasyon transferi (forwarding) yapabilir **(Hala tamamlanma
 ## Yakında Gelecek Özellikler :
 - **Akıllı Kontrat Etkileşimi** - Tron smart contract'ları ile çalışma
 -  Cüzdan Otomasyon Transferleri
--  Multising Cüzdanlar ve İşlemleri
+-  Multi-signature (Multisig) Cüzdanlar ve İşlemleri
   
 ---
-NOT: Base58 işlemleri artık kütüphane içinde, SimpleBase bağımlılığı kaldırıldı.
----
-
+#### NOT: Base58 işlemleri artık kütüphane içinde, SimpleBase bağımlılığı kaldırıldı.
 ## YENİ ADRES OLUŞTURMA KODU : 
 ```bash
 var createWallet = TronClient.CreateTronWallet();
