@@ -68,29 +68,6 @@ if (!doc.RootElement.TryGetProperty("data", out var data) || data.GetArrayLength
     return;
 }
 
-var acc = data[0];
-
-Console.WriteLine("=== TÜM SAYISAL ALANLAR ===");
-foreach (var prop in acc.EnumerateObject())
-{
-    if (prop.Value.ValueKind == JsonValueKind.Number)
-    {
-        Console.WriteLine($"{prop.Name}: {prop.Value.GetInt64()}");
-    }
-}
-
-// account_resource içindekiler
-if (acc.TryGetProperty("account_resource", out var res) && res.ValueKind == JsonValueKind.Object)
-{
-    Console.WriteLine("\n=== account_resource İÇİNDEKİLER ===");
-    foreach (var prop in res.EnumerateObject())
-    {
-        if (prop.Value.ValueKind == JsonValueKind.Number)
-        {
-            Console.WriteLine($"{prop.Name}: {prop.Value.GetInt64()}");
-        }
-    }
-}
 
 decimal usdPrice = await TronClient.GetTRXPriceUSDAsync();
 decimal tryPrice = await TronClient.GetTRXPriceTRYAsync();
@@ -100,12 +77,13 @@ Console.WriteLine($"TRX Fiyatı: {tryPrice} TL");
 
 
 Step("İSME ÖZEL TRON CÜZDANI ÜRETİMİ");
-var wallet = await TronClient.GenerateVanityAddressAsync("", maxAttempts: null); // Örnek: "TRX" içeren bir adres için containsText parametresine
-                                                                                 // "TRX" yazabilirsiniz. Ancak bu örnekte boş bırakarak herhangi bir
-                                                                                 // adres üreteceğiz. Max deneme sayısını sınırlamak isterseniz
-                                                                                 // maxAttempts parametresine bir değer verebilirsiniz.
-                                                                                 // Not: İsmine özel adresler çok nadir bulunabilir bazılarını bulmak saatler, günler sürebilir,
-                                                                                 // bu yüzden maxAttempts ile deneme sayısını sınırlamak iyi bir fikir olabilir.
+var wallet = await TronClient.GenerateVanityAddressAsync("TRX", maxAttempts: null); 
+// Örnek: "TRX" içeren bir adres için containsText parametresine
+// "TRX" yazabilirsiniz. Ancak bu örnekte boş bırakarak herhangi bir
+// adres üreteceğiz. Max deneme sayısını sınırlamak isterseniz
+// maxAttempts parametresine bir değer verebilirsiniz.
+// Not: İsmine özel adresler çok nadir bulunabilir bazılarını bulmak saatler, günler sürebilir,
+// bu yüzden maxAttempts ile deneme sayısını sınırlamak iyi bir fikir olabilir.
 if (wallet != null)
 {
     Console.WriteLine("\n=== VANITY ADRES BULUNDU ===");
@@ -117,3 +95,4 @@ else
 {
     Console.WriteLine("Vanity adres bulunamadı.");
 }
+

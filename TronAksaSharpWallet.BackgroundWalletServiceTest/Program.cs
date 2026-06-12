@@ -44,5 +44,3 @@ await TronClient.StartForwardingAsync(
     network  // ✅ network burada veriliyor
 );
 
-// BU SATIR HİÇ ÇALIŞMAZ! (StartForwardingAsync sonsuz döngü)
-Console.WriteLine("Bu yazıyı göremezsin!");

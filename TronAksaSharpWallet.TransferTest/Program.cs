@@ -73,6 +73,9 @@ Console.WriteLine($"From       : {trc20TxInfo.From}");
 Console.WriteLine($"To         : {trc20TxInfo.To}");
 Console.WriteLine($"Amount     : {trc20TxInfo.Amount} USDT");
 Console.WriteLine($"Result     : {trc20TxInfo.Result}");
+Console.WriteLine($"Fee        : {trc20TxInfo.NetFee} TRX");
+Console.WriteLine($"Energy Used: {trc20TxInfo.EnergyUsed}");
+
 Console.WriteLine("TRC20 Transferi Başarılı!");
 
 
