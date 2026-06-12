@@ -7,6 +7,8 @@
 
 **TronAksaSharp**,  C# ile yazılmış, Tron blok zinciri üzerinde çalışan uygulamalar için kapsamlı bir cüzdan kütüphanesidir. Bu kütüphane ile sıfırdan Tron cüzdanı oluşturabilir, private key'den public key'e ve oradan da Base58Check formatında Tron adresine dönüşüm yapabilirsiniz. Oluşturduğunuz adresin byte uzunluğunu doğrulayabilirsiniz.
 
+Ayrıca Vanity Address (Özel Cüzdan) özelliği sayesinde, içinde istediğiniz kelime geçen kişiselleştirilmiş Tron cüzdanları üretebilirsiniz. Örneğin: TEWJWLwFL3db**KUBILAY**2smNfto9sXdWquF4N gibi. Bu özellik ile maksimum deneme sınırı belirleyebilir, ilerleme durumunu ve üretim hızını anlık olarak takip edebilirsiniz.
+
 Kütüphane, hem Manuel RPC hem de TronGrid API desteği sunar. Manuel RPC ile TRX bakiyesi, TRC-20 token bakiyeleri (USDT, USDC vb.), stake edilen Energy ve Bandwidth miktarlarını ücretsiz olarak sorgulayabilirsiniz. TRX ve TRC-20 transferleri gönderebilir, transfer sonrası ManualTransactionInfoService.WaitForTransactionAsync() metodu ile işlemin blok zincirine dahil olmasını bekleyip block number, fee, energy used, net fee gibi detayları alabilirsiniz.
 
 TronGrid API sayesinde bir adresin tüm detaylarına tek seferde ulaşabilirsiniz: TRX bakiyesi, frozen edilmiş varlıklar (Energy, Bandwidth, TRON Power), owner/active permission'lar, SR oyları ve cüzdandaki tüm TRC-20 token'ların raw balance'ları. Ayrıca TronGrid ile TRX ve TRC-20 işlem geçmişini çekebilir, her işlemin gönderen/alıcı, miktar, fee, durum ve tarih bilgilerini alabilirsiniz (limit 200 işlem).
@@ -18,18 +20,20 @@ Ek olarak, cüzdan otomasyon transferi (forwarding) yapabilir **(Hala tamamlanma
 
 - Public Key’den **Tron Adresi** Oluşturma
 - Base58Check formatında okunabilir adres üretimi (bağımsız Base58 implementasyonu)
+- Özel cüzdan (Vanity Address) üretme özelliği
 - Adres byte uzunluğu kontrolü
 - Cüzdanın TRX ve TRC-20 token kontrolü (MainNet,Nile,Shasta) Dahil
 - TRX ve TRC20 Transfer İşlemleri (MainNet,Nile,Shasta) Dahil
 - Cüzdanın stake edilen varlıkların kontrolu (Energy,Bandwidth)
 - İşlemlerin Detaylarını görme
-- Fiyat Bilgisi
+- Fiyat Bilgisi(USD,TRY)
 
 ---
 
 ## Yakında Gelecek Özellikler :
 - **Akıllı Kontrat Etkileşimi** - Tron smart contract'ları ile çalışma
 -  Cüzdan Otomasyon Transferleri
+-  Multising Cüzdanlar ve İşlemleri
   
 ---
 NOT: Base58 işlemleri artık kütüphane içinde, SimpleBase bağımlılığı kaldırıldı.
@@ -53,6 +57,44 @@ Private Key :
  8fcef3d79e87df12c420f96a6cfae8414c5c35a410d8b12605c6bdad3900373f
 Public Key  :
  04cc8ddf9ac9266c1e065267be2e54d82a689da718b6fdbc90901b7c4c031e188b37ed065937ef730200f20cc486d272636c0ed9dc929b066c00e47fac66f47c3b
+```
+---
+## VANİTY(ÖZEL) ADRES OLUŞTURMA KODU : 
+ ⚠️ VANITY ADDRESS UYARISI ⚠️
+
+Aranan kelimenin uzunluğu süreyi doğrudan etkiler:
+
+- 3-4 karakter → 1-60 dakika
+- 5 karakter     → 4-8 saat
+- 6 karakter     → 2-5 gün
+- 7+ karakter    → HAFTALAR / AYLAR
+
+Kelime uzadıkça kombinasyon sayısı katlanarak artar.
+Örneğin "KUBILAY" (7 karakter) için 2.2 TRİLYON olasılık var.
+
+Sabırlı olmanızı ve bilgisayarınızı uzun süre açık bırakmanızı öneririz.
+```bash
+Step("İSME ÖZEL TRON CÜZDANI ÜRETİMİ");
+var wallet = await TronClient.GenerateVanityAddressAsync("TRX", maxAttempts: null); 
+if (wallet != null)
+{
+    Console.WriteLine("\n=== VANITY ADRES BULUNDU ===");
+    Console.WriteLine($"Adres: {wallet.Address}");
+    Console.WriteLine($"Private Key: {wallet.PrivateKeyHex}");
+    Console.WriteLine($"Public Key: {wallet.PublicKeyHex}");
+}
+else
+{
+    Console.WriteLine("Vanity adres bulunamadı.");
+}
+
+```
+## VANİTY(ÖZEL) ADRES OLUŞTURMA ÇIKTI ÖRNEĞİ : 
+```bash
+=== VANITY ADRES BULUNDU ===
+Adres: TRX8kL9yG69qjBuFp1iUGsXP9iBSL72ZQV
+Private Key: eb2ee53694af62219efd37317f1d189a252ac49bd4c280e954f28c6d5c8f1e53
+Public Key: 04455723363be6605e7fe2d04a17509dead988bb5f54c93a9c9dbf92474cb0611a11fdf4c24e2b9b14efa6ecdd35fd814a1cade334df37e4e39d5a3605a8126331
 ```
 ---
 ## ADRES UZUNLUK HESAPLAMA :
