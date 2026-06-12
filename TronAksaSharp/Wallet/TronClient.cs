@@ -142,14 +142,22 @@ namespace TronAksaSharp.Wallet
         }
 
         // ================= TRON ANLIK FİYAT =================
+
+        // TRON USD FİYAT
         public static async Task<decimal> GetTRXPriceUSDAsync()
         {
             return await BinancePriceService.GetTRXPriceUSDAsync();
         }
-
+        //  TRON TRY FİYAT 
         public static async Task<decimal> GetTRXPriceTRYAsync()
         {
             return await BinancePriceService.GetTRXPriceTRYAsync();
+        }
+
+        // ================= TRON İSME ÖZEL CÜZDAN ÜRETİMİ =================
+        public static async Task<TronAksaSharp.Models.Domain.TronAccount.Wallet?> GenerateVanityAddressAsync(string containsText, int? maxAttempts = null, int progressInterval = 10000)
+        {
+            return await VanityAddressGenerator.GenerateVanityAddressAsync(containsText, maxAttempts, progressInterval);
         }
     }
 }

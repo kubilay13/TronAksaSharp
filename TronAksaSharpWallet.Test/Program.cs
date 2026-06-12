@@ -97,3 +97,23 @@ decimal tryPrice = await TronClient.GetTRXPriceTRYAsync();
 
 Console.WriteLine($"TRX Fiyatı: ${usdPrice} USD");
 Console.WriteLine($"TRX Fiyatı: {tryPrice} TL");
+
+
+Step("İSME ÖZEL TRON CÜZDANI ÜRETİMİ");
+var wallet = await TronClient.GenerateVanityAddressAsync("", maxAttempts: null); // Örnek: "TRX" içeren bir adres için containsText parametresine
+                                                                                 // "TRX" yazabilirsiniz. Ancak bu örnekte boş bırakarak herhangi bir
+                                                                                 // adres üreteceğiz. Max deneme sayısını sınırlamak isterseniz
+                                                                                 // maxAttempts parametresine bir değer verebilirsiniz.
+                                                                                 // Not: İsmine özel adresler çok nadir bulunabilir bazılarını bulmak saatler, günler sürebilir,
+                                                                                 // bu yüzden maxAttempts ile deneme sayısını sınırlamak iyi bir fikir olabilir.
+if (wallet != null)
+{
+    Console.WriteLine("\n=== VANITY ADRES BULUNDU ===");
+    Console.WriteLine($"Adres: {wallet.Address}");
+    Console.WriteLine($"Private Key: {wallet.PrivateKeyHex}");
+    Console.WriteLine($"Public Key: {wallet.PublicKeyHex}");
+}
+else
+{
+    Console.WriteLine("Vanity adres bulunamadı.");
+}
